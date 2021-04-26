@@ -1,0 +1,23 @@
+h1, h2, h3, h4{
+    color: #5930f2;
+}
+
+code {
+    color: #40E4BE;
+}
+
+#MainMenu{
+    visibility: hidden;
+}
+
+div[data-testid="stDecoration"]{
+    visibility: hidden;    
+}
+
+footer{
+    visibility: hidden;
+}
+
+.st-bk{
+    background-color: #40E4BE;
+}
