@@ -1,5 +1,5 @@
 h1, h2, h3, h4{
-    color: #5930f2;
+    color: #000000;
 }
 
 code {
@@ -7,17 +7,68 @@ code {
 }
 
 #MainMenu{
-    visibility: hidden;
+    display: none;
 }
 
 div[data-testid="stDecoration"]{
-    visibility: hidden;    
+    display: none;    
 }
 
 footer{
-    visibility: hidden;
+    display: none;
 }
 
+
+/* Radio buttons */
+
 .st-bk{
-    background-color: #40E4BE;
+    background-color: #000000;
+}
+
+.st-ci{
+    background-color: transparent;
+}
+
+.st-cc{
+    color: black;
+    font-weight: 400;
+}
+
+/* Sidebar */
+
+section[data-testid="stSidebar"] > div {
+    background-color: #10B8DD;
+    padding-top: 2rem;
+    padding-left: 1.5rem;
+}
+
+section[data-testid="stSidebar"] button[title="View fullscreen"] {
+    display: none;
+}
+
+section[data-testid="stSidebar"] button[kind="icon"] {
+    display: none;
+}
+
+
+/* Images */
+
+button[title="View fullscreen"] {
+    display: none;
+}
+
+/* hr */
+
+hr{
+    width: 200px;
+    border-width: 5px;
+    border-color: #10B8DD;
+    margin-top: 0px;
+}
+
+/* First Page */
+
+section[tabindex="0"] .block-container {
+    padding-top: 0px;
+    padding-bottom: 0px;
 }

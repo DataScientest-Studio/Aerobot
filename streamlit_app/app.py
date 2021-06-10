@@ -1,9 +1,10 @@
-import inspect
-import textwrap
 from collections import OrderedDict
 
 import streamlit as st
 from streamlit.logger import get_logger
+
+# TODO : you can add and rename tabs in the ./tabs folder,
+# and import them here
 from tabs import intro, second_tab, third_tab
 
 
@@ -19,8 +20,8 @@ st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 
 LOGGER = get_logger(__name__)
 
-# Dictionary of
-# demo_name -> (demo_function, demo_description)
+# TODO: add new and/or renamed tab in this ordered dict
+# passing the name in the sidebar as
 DEMOS = OrderedDict(
     [
         (intro.sidebar_name, intro),
@@ -31,8 +32,11 @@ DEMOS = OrderedDict(
 
 
 def run():
-    st.sidebar.image("assets/logo-datascientest.png")
-    demo_name = st.sidebar.radio("Menu", list(DEMOS.keys()), 0)
+    st.sidebar.image(
+        "https://dst-studio-template.s3.eu-west-3.amazonaws.com/logo-datascientest.png",
+        width=200
+    )
+    demo_name = st.sidebar.radio("", list(DEMOS.keys()), 0)
     demo = DEMOS[demo_name]
 
     demo.tab()
