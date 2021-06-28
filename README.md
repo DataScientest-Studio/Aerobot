@@ -74,3 +74,24 @@ To run the app :
 cd streamlit_app
 streamlit run app.py
 ```
+
+The app should then be available at [localhost:8501](http://localhost:8501).
+
+
+**Docker**
+
+You can also run the Streamlit app in a [Docker](https://www.docker.com/) container. To do so, you will first need to build the Docker image :
+
+```shell
+cd streamlit_app
+docker build -t streamlit-app .
+```
+
+You can then run the container using :
+
+```shell
+docker run --name streamlit-app -p 8501:8501 streamlit-app
+```
+
+And again, the app should then be available at [localhost:8501](http://localhost:8501).
+
