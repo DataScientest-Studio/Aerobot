@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from PIL import Image
 
 
 title = "Second tab"
@@ -45,3 +46,22 @@ def run():
     )
 
     st.area_chart(chart_data)
+
+    st.markdown(
+        """
+        ## Test 3
+
+        You can also display images using [Pillow](https://pillow.readthedocs.io/en/stable/index.html).
+
+        ```python
+        import streamlit as st
+        from PIL import Image
+
+        st.image(Image.open("assets/sample-image.jpg"))
+
+        ```
+
+        """
+    )
+
+    st.image(Image.open("assets/sample-image.jpg"))

@@ -1,10 +1,11 @@
+import streamlit as st
+
 
 title = "My Awesome DataScientest project."
 sidebar_name = "Introduction"
 
 
 def run():
-    import streamlit as st
 
     # TODO: choose between one of these GIFs
     # st.image("https://dst-studio-template.s3.eu-west-3.amazonaws.com/1.gif")

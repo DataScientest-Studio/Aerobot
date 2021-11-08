@@ -17,7 +17,7 @@ st.set_page_config(
 with open("style.css", "r") as f:
     style = f.read()
 
-# st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
+st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 
 
 # TODO: add new and/or renamed tab in this ordered dict by
@@ -38,6 +38,13 @@ def run():
         width=200,
     )
     tab_name = st.sidebar.radio("", list(TABS.keys()), 0)
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(f"## {config.PROMOTION}")
+
+    st.sidebar.markdown("### Team members:")
+    for member in config.TEAM_MEMBERS:
+        st.sidebar.markdown(member.sidebar_markdown(), unsafe_allow_html=True)
+
     tab = TABS[tab_name]
 
     tab.run()
