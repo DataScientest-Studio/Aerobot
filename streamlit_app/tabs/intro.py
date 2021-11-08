@@ -3,7 +3,7 @@ title = "My Awesome DataScientest project."
 sidebar_name = "Introduction"
 
 
-def tab():
+def run():
     import streamlit as st
 
     # TODO: choose between one of these GIFs

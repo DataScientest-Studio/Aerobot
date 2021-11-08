@@ -1,28 +1,29 @@
 from collections import OrderedDict
 
 import streamlit as st
-from streamlit.logger import get_logger
 
-# TODO : you can add and rename tabs in the ./tabs folder,
-# and import them here
+# TODO : change TITLE, TEAM_MEMBERS and PROMOTION values in config.py.
+import config
+
+# TODO : you can (and should) rename and add tabs in the ./tabs folder, and import them here.
 from tabs import intro, second_tab, third_tab
 
+
+st.set_page_config(
+    page_title=config.TITLE,
+    page_icon="https://datascientest.com/wp-content/uploads/2020/03/cropped-favicon-datascientest-1-32x32.png",
+)
 
 with open("style.css", "r") as f:
     style = f.read()
 
-st.set_page_config(
-    page_title="My Awesome App",
-    page_icon="https://datascientest.com/wp-content/uploads/2020/03/cropped-favicon-datascientest-1-32x32.png"
-)
+# st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 
-st.markdown(f"<style>{style}</style>", unsafe_allow_html=True)
 
-LOGGER = get_logger(__name__)
-
-# TODO: add new and/or renamed tab in this ordered dict
-# passing the name in the sidebar as
-DEMOS = OrderedDict(
+# TODO: add new and/or renamed tab in this ordered dict by
+# passing the name in the sidebar as key and the imported tab
+# as value as follow :
+TABS = OrderedDict(
     [
         (intro.sidebar_name, intro),
         (second_tab.sidebar_name, second_tab),
@@ -34,12 +35,12 @@ DEMOS = OrderedDict(
 def run():
     st.sidebar.image(
         "https://dst-studio-template.s3.eu-west-3.amazonaws.com/logo-datascientest.png",
-        width=200
+        width=200,
     )
-    demo_name = st.sidebar.radio("", list(DEMOS.keys()), 0)
-    demo = DEMOS[demo_name]
+    tab_name = st.sidebar.radio("", list(TABS.keys()), 0)
+    tab = TABS[tab_name]
 
-    demo.tab()
+    tab.run()
 
 
 if __name__ == "__main__":

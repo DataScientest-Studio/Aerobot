@@ -7,7 +7,7 @@ title = "Second tab"
 sidebar_name = "Second Tab"
 
 
-def tab():
+def run():
 
     st.title(title)
 
@@ -16,7 +16,7 @@ def tab():
         This is your app's second tab. Fill it in `tabs/second_tab.py`.
         You can and probably should rename the file.
 
-        ## test
+        ## Test
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse gravida urna vel tincidunt vestibulum. Nunc malesuada molestie odio, vel tincidunt arcu fringilla hendrerit. Sed leo velit, elementum nec ipsum id, sagittis tempus leo. Quisque viverra ipsum arcu, et ullamcorper arcu volutpat maximus. Donec volutpat porttitor mi in tincidunt. Ut sodales commodo magna, eu volutpat lacus sodales in. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam interdum libero non leo iaculis bibendum. Suspendisse in leo posuere risus viverra suscipit.
 
@@ -24,16 +24,13 @@ def tab():
         """
     )
 
-    chart_data = pd.DataFrame(
-        np.random.randn(20, 3),
-        columns=list('abc')
-    )
+    chart_data = pd.DataFrame(np.random.randn(20, 3), columns=list("abc"))
 
     st.line_chart(chart_data)
-    
+
     st.markdown(
         """
-        ## test 2
+        ## Test 2
 
         Proin malesuada diam blandit orci auctor, ac auctor lacus porttitor. Aenean id faucibus tortor. Morbi ac odio leo. Proin consequat facilisis magna eu elementum. Proin arcu sapien, venenatis placerat blandit vitae, pharetra ac ipsum. Proin interdum purus non eros condimentum, sit amet luctus quam iaculis. Quisque vitae sapien felis. Vivamus ut tortor accumsan, dictum mi a, semper libero. Morbi sed fermentum ligula, quis varius quam. Suspendisse rutrum, sapien at scelerisque vestibulum, ipsum nibh fermentum odio, vel pellentesque arcu erat at sapien. Maecenas aliquam eget metus ut interdum.
         

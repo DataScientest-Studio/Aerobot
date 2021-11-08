@@ -2,7 +2,7 @@ title = "Third tab"
 sidebar_name = "Third Tab"
 
 
-def tab():
+def run():
     import streamlit as st
     import pandas as pd
     import numpy as np
