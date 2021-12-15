@@ -5,6 +5,7 @@
 Ce template permet d'initialiser le repository d'un projet fil rouge dans le cadre de la formation [DataScientest](https://datascientest.com/). Pour ce faire, merci de suivre les instructions suivantes (**chef de projet**):
 
 - Importez (https://github.com/new/import) ce repository (https://github.com/DataScientest-Studio/project-template) dans un nouveau **repository privé dans l'organisation DataScientest-Studio**.
+  **Attention** : Lors de l'import, il ne faut pas utiliser votre mot de passe GitHub comme indiqué, mais un _personal access token_. Vous trouverez la documentation pour générer un _personal access token_ [ici](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 ![Import Project](images/import-project-template.png)
 
