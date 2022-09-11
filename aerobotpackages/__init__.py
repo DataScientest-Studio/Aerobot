@@ -7,3 +7,4 @@
 # Helene ASSIR
 #-----------------------------------------------------------\
 from .aerobotfunctions import *
+# include additional package names here
