@@ -8,3 +8,5 @@ Then, in the '__init__.py' file, add:
 ```
 from .[your module name] import *
 ```
+This way, you do not need to explicitely import the new module in your python code. 
+Simply importing aerobotpackages will include the new modules.
