@@ -2,7 +2,11 @@
 ######################
 # PLOTTING
 ######################
-import matplotlib.pyplot as plt
+def my_funct():
+  print('I am a custom-defined function')
+  
+
+# import matplotlib.pyplot as plt
 # #%matplotlib inline
 # # Define global plot parameters for better readability and consistency among plots
 # # A complete list of the rcParams keys can be retrieved via plt.rcParams.keys() function
