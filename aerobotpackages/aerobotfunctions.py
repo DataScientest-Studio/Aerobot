@@ -4,6 +4,7 @@
 
 def Aerobot_funct():
   print('I am a custom-defined function defined in the project Aerobot')
+  return None
 
 def plot_train_history(training_history, metric, anomaly_name):
   """
@@ -24,3 +25,5 @@ def plot_train_history(training_history, metric, anomaly_name):
   plt.ylabel(f'{metric}')
   plt.legend()
   plt.show();
+
+  return None
