@@ -6,5 +6,5 @@ Define as many modules as you need, like in 'aerobotfunctions.py', which is a mo
 
 Then, in the '__init__.py' file, add:
 ```
-from [your module name].py include *
+from .[your module name] import *
 ```
