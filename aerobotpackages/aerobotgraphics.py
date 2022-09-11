@@ -1,5 +1,23 @@
+# project-specific functions related to graphics, plotting 
+# created by the 'Aerobot' project members
 
-# project-specific functions created by the 'Aerobot' project members
+# by Ioannis
+def plot_train_history(training_history, metric, anomaly_name):
+  """
+  Generete plots to monitor the train process
+  Inputs: 
+  - 'training_history'; use training_history = model.train(...)
+  - 'metric' to plot; string e.g. 'accuracy', 'loss'
+  - 'anomaly_name' e.g. 'Anomaly_Conflict'. This is used for the plot title
+  """
+  fig = plt.figure(figsize = (10,4))
+  #plt.title(f"{anomaly_name} train history - {metric.upper()}", fontsize = 20)
+  train_acc = training_history.history[metric]
+  val_acc = training_history.history['val_' + metric] # e.g. 'val_accuracy'
 
-def Aerobot_funct():
-  print('I am a custom-defined function defined in the project Aerobot')
+  plt.plot(train_acc, label = f'Training {metric}')
+  plt.plot(val_acc, label = f'Validation {metric}')
+  plt.xlabel('epochs')
+  plt.ylabel(f'{metric}')
+  plt.legend()
+  plt.show();
