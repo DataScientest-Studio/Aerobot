@@ -1509,7 +1509,7 @@ def load_saved_transformer(filepath,
 def train_load_transformer_model(dir_name, experiment_name, 
                                  df,
                                  num_epochs, 
-                                 anomalies = Anomaly_RootLabels_columns,
+                                 anomalies,
                                  threshold = 0.5, 
                                  train_mode=False, 
                                  load_model=False, 
@@ -1526,7 +1526,7 @@ def train_load_transformer_model(dir_name, experiment_name,
   - df (pd.DataFrame): input data containing at least a column 'Narrative' with 
     the texts and columns of Anomalies in one-hot format
   - num_epochs (int): number of epochs to train
-  - anomalies (list of str), anomaly root labels. Default = Anomaly_RootLabels_columns 
+  - anomalies (list of str), anomaly root labels 
   - threshold (float) threshold for probability to boolean conversion 
     during prediciton, default = 0.5
   - train_mode (boool), whether to train a model. Inference only if set to False.
