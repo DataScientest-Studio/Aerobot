@@ -5,8 +5,6 @@
 # Authors : 
 # Ioannis STASINOPOULOS
 #-----------------------------------------------------------\
-import numpy as np
-
 from .aerobotfunctions import *
 from .aerobotgraphics import *
 from .BERTTools import *
