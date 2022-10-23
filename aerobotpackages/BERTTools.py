@@ -1,6 +1,8 @@
 # project-specific functions and classes created in the 'Aerobot' project by Ioannis STASINOPOULOS
 # This file contains functions and classes for the BERT implementation
 
+import numpy as np
+
 class DataPrepMultilabelBERT():
     '''
     Prepare data for multilabel classification using BERT.
