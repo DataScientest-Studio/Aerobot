@@ -2,7 +2,8 @@
 
 by Ioannis Stasinopoulos, 11.09.2022
 
-Define as many modules as you need, like in 'aerobotfunctions.py', which is a module containing function definitions.
+Define as many modules as you need, like in 'aerobotfunctions.py', which is a module containing a dummy function definition.
+The custom-package should 'bring' along its necessary packages: make sure you import within the .py file all the packages that your functions / classes need, e.g. numpy, pandas etc. 
 
 Then, in the '__init__.py' file, add:
 ```
