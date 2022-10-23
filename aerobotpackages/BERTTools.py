@@ -1251,24 +1251,24 @@ def get_callbacks(include_tensorboard_CB = False, **kwargs):
                                           restore_best_weights = True, 
                                           verbose = 1)
   if include_tensorboard_CB == True:
-    # Load the TensorBoard notebook extension
-    import datetime
-    reload_ext tensorboard
+    print("To run TensorBoard, refer to aerobotpackages/BERTTools.py for the necessary bash commands.")
+#     # Load the TensorBoard notebook extension
+#     import datetime
+#     %reload_ext tensorboard
 
-    # Clear any logs from previous runs
-    rm -rf ./logs/
+#     # Clear any logs from previous runs
+#     %rm -rf ./logs/
 
-    # 'Unpack' the optional keyword arguments
-    experiment_dir = kwargs['log_dir_name']
+#     # 'Unpack' the optional keyword arguments
+#     experiment_dir = kwargs['log_dir_name']
 
-    # Define full path for writing logs
-    log_dir = experiment_dir + "/logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    print("Writing logs in:", experiment_dir + "/logs/fit/")
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, 
-                                                          histogram_freq=1)
+#     # Define full path for writing logs
+#     log_dir = experiment_dir + "/logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+#     print("Writing logs in:", experiment_dir + "/logs/fit/")
+#     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, 
+#                                                           histogram_freq=1)
     
-    
-    return [TON, early_stopping, tensorboard_callback]
+#     return [TON, early_stopping, tensorboard_callback]
   
   else:
     return [TON, early_stopping]
@@ -1591,7 +1591,7 @@ def train_load_transformer_model(dir_name, experiment_name,
                                                     optimizer_type = 'AdamW')
 
     # If you want to use TensorBoard, define directory where to save the training logs to
-    my_callbacks = get_callbacks(include_tensorboard_CB = True, 
+    my_callbacks = get_callbacks(include_tensorboard_CB = False, 
                                 log_dir_name = experiment_dir)
     #######################
     # Train the model
@@ -1602,23 +1602,23 @@ def train_load_transformer_model(dir_name, experiment_name,
                                                                             num_epochs = num_epochs)
 
 
-    ######################
-    # Launch TensorBoard
-    ######################
-    # Change the pwd, so that TensorBoard may locate the logs
-    %cd $experiment_dir
+#     ######################
+#     # Launch TensorBoard
+#     ######################
+#     # Change the pwd, so that TensorBoard may locate the logs
+#     %cd $experiment_dir
 
-    #Start TensorBoard through the command line or within a notebook experience. 
-    # The two interfaces are generally the same. In notebooks, use the %tensorboard line magic. 
-    # On the command line, run the same command without "%"
-    %tensorboard --logdir logs/fit
-    # Takes some time to launch
+#     #Start TensorBoard through the command line or within a notebook experience. 
+#     # The two interfaces are generally the same. In notebooks, use the %tensorboard line magic. 
+#     # On the command line, run the same command without "%"
+#     %tensorboard --logdir logs/fit
+#     # Takes some time to launch
 
-    # For Comparing different executions of your model see 
-    # https://github.com/tensorflow/tensorboard/blob/master/README.md#runs-comparing-different-executions-of-your-model
+#     # For Comparing different executions of your model see 
+#     # https://github.com/tensorflow/tensorboard/blob/master/README.md#runs-comparing-different-executions-of-your-model
 
-    # # Kill tensorboard (use the appropriate process id)
-    # !kill 2022
+#     # # Kill tensorboard (use the appropriate process id)
+#     # !kill 2022
 
     evaluation_scores, y_pred_proba, y_pred, y_test, clf_rep = infer(trained_transformer_model,
                                                                   preprocess.tf_test_dataset,
