@@ -117,6 +117,25 @@ def y_prob_to_y_pred_ML(y_pred_proba, threshold = 0.5):
 
   return y_pred
 
+def y_prob_to_y_pred(y_pred_proba, threshold = 0.5):
+  """
+  Converts probabilities into 0's and 1's. We are still in the BINARY context.
+  Input: monolabel predictions (probabilities), dimension = #samples
+  Using a user-defined threshold, return a prediction vector 'y_pred' with 
+  dimension = #samples, containing a '0' or a '1' for each sample
+  """
+  y_pred=[]
+  for value in y_pred_proba:
+
+    if value >= threshold:
+      y_pred.append(1)
+    else :
+      y_pred.append(0)
+
+  y_pred = np.array(y_pred)
+
+  return y_pred
+
 def create_dir_if_not_exists(path):
   """
   Check if the directory 'path' exists and create if necessary.
