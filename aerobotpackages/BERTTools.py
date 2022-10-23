@@ -1743,3 +1743,57 @@ def train_load_transformer_model(dir_name, experiment_name,
                   y_test = y_test, 
                   clf_rep = clf_rep,
                   clf_rep_df = clf_rep_df)
+
+def y_multilabel_to_binary(y_test, y_pred_proba, cls_idx):
+  """
+  For a given class with index 'cls_idx', convert true labels and predicted 
+  probabilities from multilabel to binary classification format.
+  Used to plot Receiver-Operating Curves (ROCs)
+
+  Inputs:
+  - y_test: ndarray, shape (#samples, # classes) containing 0 or 1, e.g. array([1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+    Each row may contain several '1' (multilabel)
+  - y_pred_proba: ndarray, shape (#samples, # classes) containing probabilities for each class, as return from our model. 
+    The probabilities for a given sample may sum to >1 in multilabel problems.
+  - cls_idx: class index (int). Pick the class of interest.
+
+  Return
+  - y_test_cls: true labels for the given class
+  - probs_cls: probabilities for the given class
+  """
+  # Initialize variables
+  y_test_cls = []
+  probs_cls = []
+
+  for i in range(len(y_test)): # Loop through the input test-set
+    # Pick the values corresponding to the class of interest
+    y_test_cls.append(y_test[i][cls_idx])
+    probs_cls.append(y_pred_proba[i][cls_idx])
+
+  y_test_cls = np.array(y_test_cls)
+  probs_cls = np.array(probs_cls)
+
+  return y_test_cls, probs_cls
+
+def find_opt_threshold_PR(precision, recall, thresholds):
+  """
+  Find the optimal threshold in a given Precision Recall (PR) Curve
+  by determining the threshold that yields the min distance to the top-right
+  point (1,1) of the PR curve.
+
+  Returns the threshold value
+  """
+  dist = [] # distance from the point (precision = 1; recall = 1)
+  for p, r in zip(precision, recall):
+    dist.append(np.sqrt( (1 - p)**2 + (1 - r)**2 ))
+
+  dist = np.array(dist)
+
+  # Find the threshold yielding the min distance
+  min_dist_idx = np.argmin(dist)
+  min_dist = dist[min_dist_idx]
+  optimum_threshold = thresholds[min_dist_idx]
+  optimum_precision = precision[min_dist_idx]
+  optimum_recall = recall[min_dist_idx]
+  
+  return optimum_threshold, optimum_precision, optimum_recall
