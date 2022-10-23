@@ -1253,10 +1253,10 @@ def get_callbacks(include_tensorboard_CB = False, **kwargs):
   if include_tensorboard_CB == True:
     # Load the TensorBoard notebook extension
     import datetime
-    %reload_ext tensorboard
+    reload_ext tensorboard
 
     # Clear any logs from previous runs
-    %rm -rf ./logs/
+    rm -rf ./logs/
 
     # 'Unpack' the optional keyword arguments
     experiment_dir = kwargs['log_dir_name']
