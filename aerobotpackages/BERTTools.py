@@ -1808,4 +1808,138 @@ def find_opt_threshold_PR(precision, recall, thresholds):
   optimum_recall = recall[min_dist_idx]
   
   return optimum_threshold, optimum_precision, optimum_recall
+
+def get_list_of_opt_thresholds(anomalies):
+  """
+  Calculate the optimal thresholds for each anomaly label using 
+  find_opt_threshold_PR(). Append optimal threshold, precision and recall values
+  to a list.
+
+  Inputs
+  -------
+  - anomalies (list of str)
+
+  Return
+  ------
+  - opt_thresholds (list of float)
+  - opt_precisions (list of float)
+  - opt_recalls (list of float)
+  """
+  from sklearn.metrics import precision_recall_curve
+
+  # Iterate through classes and find the optimal threshold and corresponding precision, recall
+  opt_thresholds = []
+  opt_precisions = []
+  opt_recalls = []
+
+  for anomaly, cls_idx in zip(anomalies, range(len(anomalies))):
+
+    # Compute precision-recall pairs for different probability thresholds.
+    y_test_cls, probs_cls = y_multilabel_to_binary(y_test, y_pred_proba, cls_idx)
+
+    # Calculate precision, recall, thresholds
+    precision, recall, thresholds = precision_recall_curve(y_test_cls, probs_cls)
+    
+    # Get optimal thresholds
+    optimum_threshold, optimum_precision, optimum_recall = find_opt_threshold_PR(precision, recall, thresholds)
+    
+    opt_thresholds.append(optimum_threshold)
+    opt_precisions.append(optimum_precision)
+    opt_recalls.append(optimum_recall)
+
+  return opt_thresholds, opt_precisions, opt_recalls
+
+def plot_PR_curve_opt_thresh(anomalies, y_test, y_pred_proba, opt_thresholds, opt_precisions, opt_recalls):
+  """
+  Plot together the Precision-Recall curves for all anomaly labels. 
+  'optimum_threshold' are plotted as stars on the curves at the coordinates (optimum_recall, optimum_precision).
+  The AUC and average precision (AP) scores are calculated for each label.
+  Includes iso-f1-score lines in the background.
+  
+  Inputs
+  -------
+  - anomalies (list of str)
+  - y_test (list of int)
+  - y_pred_proba (nd.array) each element contains [num_classes] probabilities
+  - opt_thresholds (list of float): optimal thresholds for all anomaly labels
+  - opt_precisions (list of float): optimal precisions for all anomaly labels
+  - opt_recalls (list of float):  optimal recalls for all anomaly labels
+  
+  Return
+  -------
+  None; prints a plot.
+  """
+  from sklearn import metrics
+
+  # Create a colormap
+  num_classes = len(anomalies)
+  cmap = get_cmap(num_classes)
+
+  # Instantiate figure
+  fig = plt.figure(figsize = (17,15))
+
+  lines = []  # Instantiate list of plot lines (i.e. curves) 
+  labels = [] # Instantiate list of plot labels
+
+  ###########################################################################
+  ### PLOT iso-f1 lines #######
+  f_scores = np.linspace(0.2, 0.8, num=4)
+  for f_score in f_scores:
+      x = np.linspace(0.01, 1)
+      y = f_score * x / (2 * x - f_score)
+      l, = plt.plot(x[y >= 0], y[y >= 0], color='gray', alpha = 0.4, zorder = 2)
+      plt.annotate('f1={0:0.1f}'.format(f_score), xy=(0.9, y[45] + 0.02), size=28, alpha = 0.4)
+
+  # Store in our lists for now, we call them later
+  lines.append(l)
+  labels.append('iso-f1 curves')
+
+  # Plot diagonal
+  l, = plt.plot([0,1], [0,1], '--k', alpha = 0.5)
+  lines.append(l)
+  labels.append('y = x')
+
+  ###########################################################################
+  ### PLOT precision-recall lines #####
+  for anomaly, cls_idx in zip(anomalies, range(len(anomalies))):
+
+    # Compute precision-recall pairs for different probability thresholds.
+    y_test_cls, probs_cls = y_multilabel_to_binary(y_test, y_pred_proba, cls_idx)
+
+    # Calculate precision, recall, thresholds
+    precision, recall, thresholds = precision_recall_curve(y_test_cls, probs_cls)
+  
+    # calculate precision-recall AUC (Area Under Curve)
+    auc = np.round(metrics.auc(recall, precision), 3)
+
+    # calculate the average precision (AP)
+    average_precision = metrics.average_precision_score(y_test_cls, probs_cls)
+    average_precision = np.round(average_precision, 3)
+
+    color = cmap(cls_idx) # use the same cmap as in the ROC curve
+    l, = plt.plot(recall, precision, c = color, zorder=3) 
+    # ax.plot() returns a tuple which contains only one element. 
+    # If you assign it without the comma, you just assign the tuple.
+    # using the comma, you unpack the tuple and get its element
+
+    lines.append(l)
+    labels.append(f'{anomalies[cls_idx][8:]}, AUC: {auc}, AP: {average_precision}') # slice the string, to ommit 'Anomaly_'
+
+    # Plot optimum thresholds
+    x = opt_recalls[cls_idx]
+    y = opt_precisions[cls_idx]
+    s = plt.scatter(x, y, marker = '*', s = 200, color = color)
+
+    plt.annotate('{0:0.2f}'.format(opt_thresholds[cls_idx]), xy = (x + 0.005, y + 0.005), color = color, size=30, alpha = 1)
+    
+  lines.append(s)
+  labels.append('optimal thresholds')
+    
+  plt.xlim([0.0, 1.0])
+  plt.ylim([0.0, 1.0])
+  plt.title('Precision-recall Curve with optimal thresholds')
+  plt.xlabel('recall')
+  plt.ylabel('precision')
+
+  plt.legend(lines, labels, bbox_to_anchor=(1, 0.8)); # here we use our lists of lines and labels
 #################################################################################################   
