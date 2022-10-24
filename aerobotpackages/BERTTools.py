@@ -1723,7 +1723,7 @@ def train_load_transformer_model(dir_name, experiment_name,
     # Preprocess for inference only
     preprocess = DataPrepMultilabelBERT(BERT_model_name = "google/bert_uncased_L-12_H-768_A-12", 
                                         df = df, 
-                                        anomalies = Anomaly_RootLabels_columns)
+                                        anomalies = anomalies)
 
     tf_train_dataset, tf_validation_dataset, tf_test_dataset = preprocess(train_mode = train_mode)
 
