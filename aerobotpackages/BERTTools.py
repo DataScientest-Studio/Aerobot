@@ -1,9 +1,9 @@
 # project-specific functions and classes created in the 'Aerobot' project by Ioannis STASINOPOULOS
 # This file contains functions and classes for the BERT implementation
 
-#######################
+#####################################################################################################
 # Import packages
-#######################
+#####################################################################################################
 import numpy as np
 import seaborn as sns
 import math # for math.pi etc.
@@ -78,267 +78,11 @@ from tensorflow.keras import callbacks
 ###############################
 import pickle as pkl # Saving data externally
 
-
-
-#########################################################
-# Import functions and classes for BERT implementation
-#########################################################
-
-def plot_train_history(training_history, metric, anomaly_name):
-  """
-  Generete plots to monitor the train process
-  Inputs: 
-  - 'training_history'; use training_history = model.train(...)
-  - 'metric' to plot; string e.g. 'accuracy', 'loss'
-  - 'anomaly_name' e.g. 'Anomaly_Conflict'. This is used for the plot title
-  """
-  fig = plt.figure(figsize = (10,4))
-  #plt.title(f"{anomaly_name} train history - {metric.upper()}", fontsize = 20)
-  train_acc = training_history.history[metric]
-  val_acc = training_history.history['val_' + metric] # e.g. 'val_accuracy'
-
-  plt.plot(train_acc, label = f'Training {metric}')
-  plt.plot(val_acc, label = f'Validation {metric}')
-  plt.xlabel('epochs')
-  plt.ylabel(f'{metric}')
-  plt.legend()
-  plt.show();
-
-def y_prob_to_y_pred_ML(y_pred_proba, threshold = 0.5):
-  """
-  Converts probabilities into 0's and 1's. We are still in the MULTILABEL context.
-  Input: MULTILABEL predictions (probabilities whose sum for each sample may exceed > 1) coming directly from the model
-  Using a user-defined threshold, return a MULTILABEL prediction vector 'y_pred' containing 0's and 1's
-  """
-  y_pred=[]
-  for sample in y_pred_proba:
-    y_pred.append([1 if i>= threshold else 0 for i in sample])
-  y_pred = np.array(y_pred)
-
-  return y_pred
-
-def y_prob_to_y_pred(y_pred_proba, threshold = 0.5):
-  """
-  Converts probabilities into 0's and 1's. We are still in the BINARY context.
-  Input: monolabel predictions (probabilities), dimension = #samples
-  Using a user-defined threshold, return a prediction vector 'y_pred' with 
-  dimension = #samples, containing a '0' or a '1' for each sample
-  """
-  y_pred=[]
-  for value in y_pred_proba:
-
-    if value >= threshold:
-      y_pred.append(1)
-    else :
-      y_pred.append(0)
-
-  y_pred = np.array(y_pred)
-
-  return y_pred
-
-def create_dir_if_not_exists(path):
-  """
-  Check if the directory 'path' exists and create if necessary.
-  """
-  import os
-  if not os.path.exists(path):
-    # Create a new directory because it does not exist
-    os.makedirs(path)
-    print(f"New directory created:\n {path} \n")
-    
-def save_ML_outputs(dir_name, experiment_name, **kwargs):
-    """
-    Save multilabel classification outputs (y_pred_proba, y_pred, clf_rep) and target
-    variable y_test.
-    Uses **kwargs, so that the user may save only a part of the variables.
-
-    Inputs
-    -------
-    - 'dir_name' (str): root directory, with slash at the end
-    - 'experiment_name' (str): subdirectory, appended to 'dir_name'. Is also
-      part of the .pkl file's name.
-    - additional keyword arguments:
-      - y_pred_proba
-      - y_pred
-      - y_test
-      - 'clf_rep' (classification report in 
-      dictionary format)
-      - 'clf_rep_df' (classification report in 
-      pd.DataFrame format)
-    """
-    create_dir_if_not_exists(dir_name)
-
-    # 'Unpack' the optional keyword arguments
-    # kwargs behaves like a dictionary
-    for key, val in zip(kwargs.keys(), kwargs.values()):
-      print("Saving", str(key), "...")
-      filename_pkl = experiment_name + '_' + str(key) +  '.pkl'
-      path_and_filename_pkl = dir_name + filename_pkl
-      pkl.dump(val, open(path_and_filename_pkl, 'wb'))
-
-    print("\n")
-    print("Multilabel results were successfully saved in \n", dir_name)
-
-def convert_clf_rep_to_df_multilabel_BERT_kw_args(clf_rep, anomalies, **kwargs):
-  '''
-  Return the classification report in form of a pd.DataFrame.
-  Tailored for extracting MULTILABEL BERT experiment results.
-  The DataFrame contains dditional columns containing experiment information.
-  Improvement: Their construction should be automatised as much as possible.
   
-  Inputs
-  -------
-  - multilabel classification report in dictionary format
-  (does not contain '0' and '1' keys)
-  - anomalies (list of str): Used to label the classification report.
-    Best use the .anomalies attribute of a 'DataPrepMultilabelBERT' class 
-    object.
-  - additional keyword arguments. Pass the ones you wish and even additional ones.
-    They are all automatically unpacked, a column is created in the DataFrame, with 
-    col_name = str(keyword_of_the_argument) and value = kwarg_value.
-    
-    Here is a nonexhaustive list of possible kwargs in the context of our 
-    transformers:
-    - classifier (str), e.g. 'BERT_BASE' or 'DistilBERT' 
-    - preprocessing (str), e.g. 'original' or 'raw_stem' or 'PP'. 'original' in AeroBot
-      means no preprocessing at all, not even tokenization or stemming
-    - undersampling (int), 0 or 1 if undersampling was applied
-
-    - UNfrozen_layers (str), e.g. '9_10_11_12' if the last 4 layers were trained, 
-      str(None) if all layers were frozen. 
-      You can pass 'str(model.trainable_layers)'.
-      We use str() in case the value is 'None', other wise it is just empty.
-      Layers run from 1 to 12!
-    - concat_layers (str), whether / which layers were concatenated, e.g. str(None) 
-      or '8_9_10_11'
-      You can pass 'str(trained_transformer_model.concat_slice.layers_to_concat)'
-      We use str() in case the value is 'None', other wise it is just empty.
-      Layers run from 1 to 12!
-    - comments (str), misc. comment, e.g. 'last_hidden_state_CLS_random_state_222'
-      or 'Flatten layer X' or 'max_length_345' or 'last_hidden_state_CLS'
-    - experiment_ID (str), e.g. '7_3_9_4'
-    - padding (str), padding setting, e.g. 'pre' or 'post'
-    - truncating (str), truncation setting, e.g. 'pre' or 'post'
-    - maxlen (int), max_length value (length of tokenized sequence)   
-
-  Return
-  -------
-  - classification report in form of a pd.DataFrame with additional columns 
-    containing experiment information
-  '''
-  # write classification report dictionnary into pd.DataFrame
-  metrics = pd.DataFrame(clf_rep)
-
-  # The rest of the code is basically kind of 'transposing' the format 
-  # and adding extra columns with parameter values
-
-  # Rename columns with anomaly names
-  # Crete dictionary with correspondance among label indices and anomaly names
-  anomaly_labels = dict(zip(metrics.columns[0:len(anomalies)], anomalies))
-  metrics = metrics.rename(columns = anomaly_labels)
-
-  ##########################################################
-  # Create DataFrame in the right format for the plotting of results
-  clf_rep_df = pd.DataFrame()
-  for anomaly in metrics.columns[0:len(anomalies)]:
-
-    temp_df = pd.DataFrame(index = metrics.index) # create temporary DataFrame with the 4 metrics as index
-    temp_df['values'] = metrics.filter(items = [anomaly]).values # write the 4 values for the selected anomaly
-    temp_df['anomaly'] = anomaly # fill in the column with the selected anomaly label
-    clf_rep_df = pd.concat([clf_rep_df, temp_df])
-
-  clf_rep_df = clf_rep_df.reset_index().rename(columns = {'index': 'metric'})
-
-  # Fill in additionnal columns with metadata by 'unpacking' the 
-  # keyword arguments
-  for key, val in zip(kwargs.keys(), kwargs.values()):
-    clf_rep_df[str(key)] = val        # 'BERT_BASE' or 'DistilBERT'
-
-  # # Reorder columns DO WE REALLY NEED TO ? CHECK 6.3.4 (import - plotting notebook)
-  # clf_rep_df = clf_rep_df[[\
-  #                          'experiment_ID',
-  #                          'classifier', 
-  #                          'preprocessing', 
-  #                          'undersampling',
-  #                          'UNfrozen_layers',
-  #                          'concat_layers',
-  #                          'comments',
-  #                          'anomaly', 
-  #                          #'num_words', 
-  #                          #'maxlen', 
-  #                          #'padding', 
-  #                          #'truncating', 
-  #                          'metric', 
-  #                          'values']]
-  print("Classification report successfully converted into DataFrame of length:", len(clf_rep_df)) #should be 56 = 14 anomalies * 4 metrics
-
-  return clf_rep_df    
-
-def save_exp_info_to_txt(dir_name, experiment_name, model_attr_to_save, 
-                         class_objects, model, include_model_summary = True,
-                         **kwargs):
-    """
-    Save experiment information to a .txt file for future reference.
-
-    Inputs
-    -------
-    - 'dir_name' (str): root directory, with slash at the end
-    - 'experiment_name' (str): subdirectory, appended to 'dir_name'. Is also
-      part of the .txt file's name.
-    - model_attr_to_save (list of strings): model attributes to save, e.g. 
-      'BERT_model_name', 'trainable_layers', 'num_classes', 'anomalies', 
-      'batch_size','max_length', ...
-    - class_objects (list of class objects): class objects, where to look for the 
-      'model_attr_to_save'
-    - model (transformer model object): used to generate the model.summary() and
-      write it to the file  
-    - include_model_summary (bool) whether to include the model summary in the 
-      .txt file. Default = True
-    - additional keyword arguments that should be saved in the .txt file
-
-    Return
-    -------
-    None; creates a .txt file in directory 'dir_name'.
-    """
-    create_dir_if_not_exists(dir_name)
-    
-    ###################################################################
-    # PREPARE THE DATA TO BE SAVED INTO A DICTIONARY 'dict_for_export'
-    ###################################################################
-    # Initialize empty dictionary
-    dict_for_export = dict({})
-
-    # Loop through the class objects
-    for obj in class_objects:
-      # Get the object's attributes in form of a dictionary
-      d = obj.__dict__
-      # Select only the elements whose key is in 'model_attr_to_save'
-      param_dict = {k:d[k] for k in model_attr_to_save if k in d}
-      # 'Append' to the dictionary 'dict_for_export'
-      dict_for_export.update(param_dict) # if two keys are the same (e.g. 'max_length'), it overwrites the value
-
-    # Append additional elements that are not class attributes, passed via the 
-    # kwargs
-    for key, val in zip(kwargs.keys(), kwargs.values()):
-      dict_for_export.update({str(key):val})
-
-    ###########################
-    # WRITE DATA TO .txt file
-    ###########################
-    # Write dictionary to .txt file
-    filename = dir_name + experiment_name + '_exp_info.txt'
-    with open(filename, 'w') as f:
-        print(dict_for_export, file = f)
-
-    if include_model_summary == True:
-      # Append the model summary to the .txt file
-      with open(filename, 'a') as f: # 'a' stands for append; prevents overwritting
-      # print(dict_for_export, file = f)
-        model.summary(print_fn=lambda x: f.write(x + '\n'))
-
-    print("Experiment information successfully written to .txt file located in:\n", dir_name)
-
-
+#####################################################################################################
+# MAIN CLASSES AND FUNCTIONS FOR BERT IMPLEMENTATION
+#####################################################################################################
+  
 class DataPrepMultilabelBERT():
     '''
     Prepare data for multilabel classification using BERT.
@@ -1763,6 +1507,254 @@ def train_load_transformer_model(dir_name, experiment_name,
                   clf_rep = clf_rep,
                   clf_rep_df = clf_rep_df)
 
+      
+#####################################################################################################
+# AUXILIARY FUNCTIONS
+#####################################################################################################
+
+def plot_train_history(training_history, metric, anomaly_name):
+  """
+  Generete plots to monitor the train process
+  Inputs: 
+  - 'training_history'; use training_history = model.train(...)
+  - 'metric' to plot; string e.g. 'accuracy', 'loss'
+  - 'anomaly_name' e.g. 'Anomaly_Conflict'. This is used for the plot title
+  """
+  fig = plt.figure(figsize = (10,4))
+  #plt.title(f"{anomaly_name} train history - {metric.upper()}", fontsize = 20)
+  train_acc = training_history.history[metric]
+  val_acc = training_history.history['val_' + metric] # e.g. 'val_accuracy'
+
+  plt.plot(train_acc, label = f'Training {metric}')
+  plt.plot(val_acc, label = f'Validation {metric}')
+  plt.xlabel('epochs')
+  plt.ylabel(f'{metric}')
+  plt.legend()
+  plt.show();
+
+def y_prob_to_y_pred_ML(y_pred_proba, threshold = 0.5):
+  """
+  Converts probabilities into 0's and 1's. We are still in the MULTILABEL context.
+  Input: MULTILABEL predictions (probabilities whose sum for each sample may exceed > 1) coming directly from the model
+  Using a user-defined threshold, return a MULTILABEL prediction vector 'y_pred' containing 0's and 1's
+  """
+  y_pred=[]
+  for sample in y_pred_proba:
+    y_pred.append([1 if i>= threshold else 0 for i in sample])
+  y_pred = np.array(y_pred)
+
+  return y_pred
+
+def y_prob_to_y_pred(y_pred_proba, threshold = 0.5):
+  """
+  Converts probabilities into 0's and 1's. We are still in the BINARY context.
+  Input: monolabel predictions (probabilities), dimension = #samples
+  Using a user-defined threshold, return a prediction vector 'y_pred' with 
+  dimension = #samples, containing a '0' or a '1' for each sample
+  """
+  y_pred=[]
+  for value in y_pred_proba:
+
+    if value >= threshold:
+      y_pred.append(1)
+    else :
+      y_pred.append(0)
+
+  y_pred = np.array(y_pred)
+
+  return y_pred
+
+def create_dir_if_not_exists(path):
+  """
+  Check if the directory 'path' exists and create if necessary.
+  """
+  import os
+  if not os.path.exists(path):
+    # Create a new directory because it does not exist
+    os.makedirs(path)
+    print(f"New directory created:\n {path} \n")
+    
+def save_ML_outputs(dir_name, experiment_name, **kwargs):
+    """
+    Save multilabel classification outputs (y_pred_proba, y_pred, clf_rep) and target
+    variable y_test.
+    Uses **kwargs, so that the user may save only a part of the variables.
+
+    Inputs
+    -------
+    - 'dir_name' (str): root directory, with slash at the end
+    - 'experiment_name' (str): subdirectory, appended to 'dir_name'. Is also
+      part of the .pkl file's name.
+    - additional keyword arguments:
+      - y_pred_proba
+      - y_pred
+      - y_test
+      - 'clf_rep' (classification report in 
+      dictionary format)
+      - 'clf_rep_df' (classification report in 
+      pd.DataFrame format)
+    """
+    create_dir_if_not_exists(dir_name)
+
+    # 'Unpack' the optional keyword arguments
+    # kwargs behaves like a dictionary
+    for key, val in zip(kwargs.keys(), kwargs.values()):
+      print("Saving", str(key), "...")
+      filename_pkl = experiment_name + '_' + str(key) +  '.pkl'
+      path_and_filename_pkl = dir_name + filename_pkl
+      pkl.dump(val, open(path_and_filename_pkl, 'wb'))
+
+    print("\n")
+    print("Multilabel results were successfully saved in \n", dir_name)
+
+def convert_clf_rep_to_df_multilabel_BERT_kw_args(clf_rep, anomalies, **kwargs):
+  '''
+  Return the classification report in form of a pd.DataFrame.
+  Tailored for extracting MULTILABEL BERT experiment results.
+  The DataFrame contains dditional columns containing experiment information.
+  Improvement: Their construction should be automatised as much as possible.
+  
+  Inputs
+  -------
+  - multilabel classification report in dictionary format
+  (does not contain '0' and '1' keys)
+  - anomalies (list of str): Used to label the classification report.
+    Best use the .anomalies attribute of a 'DataPrepMultilabelBERT' class 
+    object.
+  - additional keyword arguments. Pass the ones you wish and even additional ones.
+    They are all automatically unpacked, a column is created in the DataFrame, with 
+    col_name = str(keyword_of_the_argument) and value = kwarg_value.
+    
+    Here is a nonexhaustive list of possible kwargs in the context of our 
+    transformers:
+    - classifier (str), e.g. 'BERT_BASE' or 'DistilBERT' 
+    - preprocessing (str), e.g. 'original' or 'raw_stem' or 'PP'. 'original' in AeroBot
+      means no preprocessing at all, not even tokenization or stemming
+    - undersampling (int), 0 or 1 if undersampling was applied
+
+    - UNfrozen_layers (str), e.g. '9_10_11_12' if the last 4 layers were trained, 
+      str(None) if all layers were frozen. 
+      You can pass 'str(model.trainable_layers)'.
+      We use str() in case the value is 'None', other wise it is just empty.
+      Layers run from 1 to 12!
+    - concat_layers (str), whether / which layers were concatenated, e.g. str(None) 
+      or '8_9_10_11'
+      You can pass 'str(trained_transformer_model.concat_slice.layers_to_concat)'
+      We use str() in case the value is 'None', other wise it is just empty.
+      Layers run from 1 to 12!
+    - comments (str), misc. comment, e.g. 'last_hidden_state_CLS_random_state_222'
+      or 'Flatten layer X' or 'max_length_345' or 'last_hidden_state_CLS'
+    - experiment_ID (str), e.g. '7_3_9_4'
+    - padding (str), padding setting, e.g. 'pre' or 'post'
+    - truncating (str), truncation setting, e.g. 'pre' or 'post'
+    - maxlen (int), max_length value (length of tokenized sequence)   
+
+  Return
+  -------
+  - classification report in form of a pd.DataFrame with additional columns 
+    containing experiment information
+  '''
+  # write classification report dictionnary into pd.DataFrame
+  metrics = pd.DataFrame(clf_rep)
+
+  # The rest of the code is basically kind of 'transposing' the format 
+  # and adding extra columns with parameter values
+
+  # Rename columns with anomaly names
+  # Crete dictionary with correspondance among label indices and anomaly names
+  anomaly_labels = dict(zip(metrics.columns[0:len(anomalies)], anomalies))
+  metrics = metrics.rename(columns = anomaly_labels)
+
+  #####################################################################
+  # Create DataFrame in the right format for the plotting of results
+  #####################################################################
+  clf_rep_df = pd.DataFrame()
+  for anomaly in metrics.columns[0:len(anomalies)]:
+
+    temp_df = pd.DataFrame(index = metrics.index) # create temporary DataFrame with the 4 metrics as index
+    temp_df['values'] = metrics.filter(items = [anomaly]).values # write the 4 values for the selected anomaly
+    temp_df['anomaly'] = anomaly # fill in the column with the selected anomaly label
+    clf_rep_df = pd.concat([clf_rep_df, temp_df])
+
+  clf_rep_df = clf_rep_df.reset_index().rename(columns = {'index': 'metric'})
+
+  # Fill in additionnal columns with metadata by 'unpacking' the 
+  # keyword arguments
+  for key, val in zip(kwargs.keys(), kwargs.values()):
+    clf_rep_df[str(key)] = val        # 'BERT_BASE' or 'DistilBERT'
+
+  print("Classification report successfully converted into DataFrame of length:", len(clf_rep_df)) #should be 56 = 14 anomalies * 4 metrics
+  return clf_rep_df    
+
+def save_exp_info_to_txt(dir_name, experiment_name, model_attr_to_save, 
+                         class_objects, model, include_model_summary = True,
+                         **kwargs):
+    """
+    Save experiment information to a .txt file for future reference.
+
+    Inputs
+    -------
+    - 'dir_name' (str): root directory, with slash at the end
+    - 'experiment_name' (str): subdirectory, appended to 'dir_name'. Is also
+      part of the .txt file's name.
+    - model_attr_to_save (list of strings): model attributes to save, e.g. 
+      'BERT_model_name', 'trainable_layers', 'num_classes', 'anomalies', 
+      'batch_size','max_length', ...
+    - class_objects (list of class objects): class objects, where to look for the 
+      'model_attr_to_save'
+    - model (transformer model object): used to generate the model.summary() and
+      write it to the file  
+    - include_model_summary (bool) whether to include the model summary in the 
+      .txt file. Default = True
+    - additional keyword arguments that should be saved in the .txt file
+
+    Return
+    -------
+    None; creates a .txt file in directory 'dir_name'.
+    """
+    create_dir_if_not_exists(dir_name)
+    
+    ###################################################################
+    # PREPARE THE DATA TO BE SAVED INTO A DICTIONARY 'dict_for_export'
+    ###################################################################
+    # Initialize empty dictionary
+    dict_for_export = dict({})
+
+    # Loop through the class objects
+    for obj in class_objects:
+      # Get the object's attributes in form of a dictionary
+      d = obj.__dict__
+      # Select only the elements whose key is in 'model_attr_to_save'
+      param_dict = {k:d[k] for k in model_attr_to_save if k in d}
+      # 'Append' to the dictionary 'dict_for_export'
+      dict_for_export.update(param_dict) # if two keys are the same (e.g. 'max_length'), it overwrites the value
+
+    # Append additional elements that are not class attributes, passed via the 
+    # kwargs
+    for key, val in zip(kwargs.keys(), kwargs.values()):
+      dict_for_export.update({str(key):val})
+
+    ###########################
+    # WRITE DATA TO .txt file
+    ###########################
+    # Write dictionary to .txt file
+    filename = dir_name + experiment_name + '_exp_info.txt'
+    with open(filename, 'w') as f:
+        print(dict_for_export, file = f)
+
+    if include_model_summary == True:
+      # Append the model summary to the .txt file
+      with open(filename, 'a') as f: # 'a' stands for append; prevents overwritting
+      # print(dict_for_export, file = f)
+        model.summary(print_fn=lambda x: f.write(x + '\n'))
+
+    print("Experiment information successfully written to .txt file located in:\n", dir_name)
+
+def get_cmap(n, name='tab20'):
+    '''Used for plot. Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
+    RGB color; the keyword argument name must be a standard mpl colormap name.'''
+    return plt.cm.get_cmap(name, n)       
+      
 def y_multilabel_to_binary(y_test, y_pred_proba, cls_idx):
   """
   For a given class with index 'cls_idx', convert true labels and predicted 
@@ -1816,3 +1808,4 @@ def find_opt_threshold_PR(precision, recall, thresholds):
   optimum_recall = recall[min_dist_idx]
   
   return optimum_threshold, optimum_precision, optimum_recall
+#################################################################################################   
