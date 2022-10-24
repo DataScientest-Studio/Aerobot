@@ -5,7 +5,7 @@
 # Authors : 
 # Ioannis STASINOPOULOS
 #-----------------------------------------------------------\
-from generic_packages import *
+from .generic_packages import *
 from .aerobotfunctions import *
 from .BERTTools import *
 # include additional package names here
