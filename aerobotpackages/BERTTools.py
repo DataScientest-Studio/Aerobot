@@ -1809,7 +1809,7 @@ def find_opt_threshold_PR(precision, recall, thresholds):
   
   return optimum_threshold, optimum_precision, optimum_recall
 
-def get_list_of_opt_thresholds(anomalies):
+def get_list_of_opt_thresholds(anomalies, y_test, y_pred_proba):
   """
   Calculate the optimal thresholds for each anomaly label using 
   find_opt_threshold_PR(). Append optimal threshold, precision and recall values
@@ -1818,6 +1818,8 @@ def get_list_of_opt_thresholds(anomalies):
   Inputs
   -------
   - anomalies (list of str)
+  - y_test (list of int)
+  - y_pred_proba (nd.array) each element contains [num_classes] probabilities
 
   Return
   ------
