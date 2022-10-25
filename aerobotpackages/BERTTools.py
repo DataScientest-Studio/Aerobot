@@ -1400,7 +1400,7 @@ def train_load_transformer_model(dir_name, experiment_name,
                                                         UNfrozen_layers = '9,10,11,12',
                                                         concat_layers = 'None',
                                                         comments = 'last_hidden_state_CLS',
-                                                        experiment_ID = '11_3_3'
+                                                        experiment_ID = experiment_name
                                                         )
     print("\n Showing clf_rep_df.head():\n")
     print(clf_rep_df.head())
@@ -1495,7 +1495,7 @@ def train_load_transformer_model(dir_name, experiment_name,
                                                               UNfrozen_layers = '9,10,11,12',
                                                               concat_layers = 'None',
                                                               comments = 'inference_on_FINAL_test_set',
-                                                              experiment_ID = '11_3_3'
+                                                              experiment_ID = experiment_name
                                                               )
       
       ###############################
