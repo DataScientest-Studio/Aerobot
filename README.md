@@ -35,14 +35,20 @@ The goal of this project is to **...**
 
 This project was developed by the following team :
 
-- John Doe ([GitHub](https://github.com/) / [LinkedIn](http://linkedin.com/))
-- Martin Dupont ([GitHub](https://github.com/) / [LinkedIn](http://linkedin.com/))
+- Ioannis STASINOPOULOS ([GitHub](https://github.com/Cochonaki)) / [LinkedIn](https://www.linkedin.com/in/ioannis-stasinopoulos/))
 
 You can browse and run the [notebooks](./notebooks). You will need to install the dependencies (in a dedicated environment) :
 
 ```
 pip install -r requirements.txt
 ```
+___Note:___ Use the ```requirements_for_Google_Colab.txt``` on Google Colab. 
+
+This file was generated with 
+```
+! pip freeze > requirements.txt
+```
+on Google Colab and contains an exhaustive list of the necessary packages.
 
 ## Streamlit App
 
