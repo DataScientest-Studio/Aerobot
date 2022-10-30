@@ -43,12 +43,6 @@ tensorflow-io-gcs-filesystem==0.27.0
 tensorflow-metadata==1.10.0
 tensorflow-probability==0.16.0
 tokenizers==0.13.1
-torch @ https://download.pytorch.org/whl/cu113/torch-1.12.1%2Bcu113-cp37-cp37m-linux_x86_64.whl
-torchaudio @ https://download.pytorch.org/whl/cu113/torchaudio-0.12.1%2Bcu113-cp37-cp37m-linux_x86_64.whl
-torchsummary==1.5.1
-torchtext==0.13.1
-torchvision @ https://download.pytorch.org/whl/cu113/torchvision-0.13.1%2Bcu113-cp37-cp37m-linux_x86_64.whl
-tornado==5.1.1
 tqdm==4.64.1
 transformers==4.23.1
 tweepy==3.10.0
