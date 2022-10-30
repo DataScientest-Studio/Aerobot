@@ -1292,10 +1292,12 @@ def train_load_transformer_model(dir_name, experiment_name,
   - anomalies (list of str), anomaly root labels 
   - threshold (float) threshold for probability to boolean conversion 
     during prediciton, default = 0.5
-  - train_mode (boool), whether to train a model. Inference only if set to False.
+  - train_mode (bool), whether to train a model. Inference only if set to False.
     Default = False
   - load_model (bool), whether to load an existing model. Default = False
   - save_and_overwrite_model (bool), whether to save the trained model. 
+    If train_mode == False and load_model = True, 'save_and_overwrite_model' 
+    decides whether the clf_rep is saved or not.
 
     /!\ this will overwrite an existing model located in the same directory!
     Default = False)
@@ -1498,14 +1500,15 @@ def train_load_transformer_model(dir_name, experiment_name,
                                                               experiment_ID = experiment_name
                                                               )
       
-      ###############################
-      # SAVE THE MULTILABEL OUTPUTS
-      save_ML_outputs(dir_name, experiment_name + '_infer_FINAL_test_set', 
-                  y_pred_proba = y_pred_proba, 
-                  y_pred = y_pred, 
-                  y_test = y_test, 
-                  clf_rep = clf_rep,
-                  clf_rep_df = clf_rep_df)
+      if save_and_overwrite_model == True:
+        ###############################
+        # SAVE THE MULTILABEL OUTPUTS
+        save_ML_outputs(dir_name, experiment_name + '_infer_FINAL_test_set', 
+                    y_pred_proba = y_pred_proba, 
+                    y_pred = y_pred, 
+                    y_test = y_test, 
+                    clf_rep = clf_rep,
+                    clf_rep_df = clf_rep_df)
 
       
 #####################################################################################################
