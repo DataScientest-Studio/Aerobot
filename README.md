@@ -37,7 +37,7 @@ This project was developed by the following team :
 
 - Ioannis STASINOPOULOS ([GitHub](https://github.com/Cochonaki)) / [LinkedIn](https://www.linkedin.com/in/ioannis-stasinopoulos/))
 
-You can browse and run the [notebooks](./notebooks). You will need to install the dependencies (in a dedicated environment) :
+You can browse and run the [notebooks](./notebooks). You will need to install the dependencies (in a dedicated environment) with:
 
 ```
 pip install -r requirements.txt
@@ -50,6 +50,28 @@ This file was generated with
 ```
 on Google Colab and contains an exhaustive list of the necessary packages.
 
+### Installation in a (mini)conda environment
+Pre-requisite: (mini)conda is installed.
+
+1. Create a conda environment named e.g. 'aerobot_local'
+This installs python and basic packages, e.g. pip, necessary to install the project packages later on.
+```
+conda create --name aerobot_local python
+```
+2. Activate the environment
+```
+conda activate aerobot_local
+```
+3. Install the AeroBOT packages
+```
+pip install -r requirements.txt
+```
+This takes several minutes.
+
+Check the installation
+```
+conda list # list installed packages in your environment
+```
 ## Streamlit App
 
 **Add explanations on how to use the app.**
