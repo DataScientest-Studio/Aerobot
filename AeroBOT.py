@@ -8,7 +8,7 @@ parser.add_argument('limit',
                     default=10, 
                     help='(int) How many entries of the DataFrame to process. \
                     The higher this argument, the longer the inference will last. \
-                    Default: 10')
+                    Suggested value: 100. Default: 10')
 args = parser.parse_args()
 
 from aerobotpackages import train_load_transformer_model
