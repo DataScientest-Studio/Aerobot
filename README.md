@@ -51,17 +51,21 @@ This file was generated with
 on Google Colab and contains an exhaustive list of the necessary packages.
 
 ### Installation in a (mini)conda environment
-Pre-requisite: (mini)conda is installed.
+Pre-requisites: 
+- (mini)conda is installed.
+- Aerbot repo is cloned locally.
 
-1. Create a conda environment named e.g. 'aerobot_local'
+1. Create a conda environment named e.g. 'aerobot_venv'
+```
+conda create --name aerobot_venv python
+```
 This installs python and basic packages, e.g. pip, necessary to install the project packages later on.
-```
-conda create --name aerobot_local python
-```
+
 2. Activate the environment
 ```
 conda activate aerobot_local
 ```
+
 3. Navigate to the local mirror of the Aerobot repo using ```cd``` 
 and nstall the AeroBOT packages into your conda environment:
 ```
@@ -69,9 +73,9 @@ pip install -r requirements.txt
 ```
 This takes several minutes.
 
-4. Check the installation
+4. Check the installation by listing the installed packages in 'aerobot_venv'.
 ```
-conda list # list installed packages in your environment
+conda list 
 ```
 5. Execute the ```AeroBOT.py``` program
 (make sure you have cd to the location of ```AeroBOT.py```)
@@ -79,7 +83,8 @@ conda list # list installed packages in your environment
 python AeroBOT.py 10
 ```
 This will infer the transformer model on the first 10 entries of the final test set.
-Run
+The program informs the user on its actions by printing info in the command line.
+If necessary, run
 ```
 python AeroBOT.py --help
 ```
