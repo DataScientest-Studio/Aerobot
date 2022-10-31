@@ -62,16 +62,29 @@ conda create --name aerobot_local python
 ```
 conda activate aerobot_local
 ```
-3. Install the AeroBOT packages
+3. Navigate to the local mirror of the Aerobot repo using ```cd``` 
+and nstall the AeroBOT packages into your conda environment:
 ```
 pip install -r requirements.txt
 ```
 This takes several minutes.
 
-Check the installation
+4. Check the installation
 ```
 conda list # list installed packages in your environment
 ```
+5. Execute the ```AeroBOT.py``` program
+(make sure you have cd to the location of ```AeroBOT.py```)
+```
+python AeroBOT.py 10
+```
+This will infer the transformer model on the first 10 entries of the final test set.
+Run
+```
+python AeroBOT.py --help
+```
+for help.
+
 ## Streamlit App
 
 **Add explanations on how to use the app.**
