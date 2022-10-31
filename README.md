@@ -63,16 +63,16 @@ This file was generated with
 ```
 on Google Colab and contains an exhaustive list of the necessary packages.
 
-### Installation in a (mini)conda environment
+## Installation in a (mini)conda environment
 Pre-requisites: 
 - (mini)conda is installed.
 - Aerbot repo is cloned locally.
 
 1. Create a conda environment named e.g. 'aerobot_venv'
 ```
-conda create --name aerobot_venv python
+conda create --name aerobot_venv {python==3.7.5}
 ```
-This installs python and basic packages, e.g. pip, necessary to install the project packages later on.
+This installs python v3.7.5 and basic packages, e.g. pip, necessary to install the project packages later on.
 
 2. Activate the environment
 ```
