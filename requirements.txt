@@ -1,7 +1,22 @@
-beautifulsoup4-4.11.1 # for downloading files from Google Drive 
+
+###########################################
+# For downloading files from Google Drive
+# not sure these are necessary
+#google==3.0.0
+#soupsieve==2.3.2.post1
+#beautifulsoup4-4.11.1
+
+google-api-python-client==2.65.0 
+google-auth-httplib2==0.1.0 
+httplib2==0.21.0 
+uritemplate==4.1.1
+###########################################
+
+###########################################
+# Other
+###########################################
 bokeh==2.3.3
 datasets @ git+https://github.com/huggingface/datasets@4dbec2dc263d307cc635d43519f3f449d45f886d
-google==3.0.0 # for downloading files from Google Drive
 h5py==3.1.0
 huggingface-hub==0.10.1
 joblib==1.2.0
@@ -33,7 +48,6 @@ sklearn-pandas==1.8.0
 spacy==3.4.2
 spacy-legacy==3.0.10
 spacy-loggers==1.0.3
-soupsieve==2.3.2.post1 # for downloading files from Google Drive
 tensorboard==2.9.1
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
