@@ -42,11 +42,6 @@ Last but not least, we perform a **critical error analysis** by discussing the o
 *The program ```AeroBOT.py``` described below demonstrates the inference procedure of our BERT-based transformer model on the final test set of data.
 The rest of the content is found in the notebooks available on this repository.*
 
-## Team
-This project was developed by the following team :
-
-- Ioannis STASINOPOULOS ([GitHub](https://github.com/Cochonaki)) / [LinkedIn](https://www.linkedin.com/in/ioannis-stasinopoulos/))
-
 ## Notebooks
 You can browse though the [notebooks](./notebooks). 
 
@@ -156,3 +151,9 @@ docker run --name streamlit-app -p 8501:8501 streamlit-app
 
 And again, the app should then be available at [localhost:8501](http://localhost:8501).
 --->
+
+## Credits
+- Ioannis STASINOPOULOS ([GitHub](https://github.com/Cochonaki)) / [LinkedIn](https://www.linkedin.com/in/ioannis-stasinopoulos/))
+
+Project mentor:
+Alban THUET (DataScientest) [LinkedIn](https://www.linkedin.com/in/alban-thuet-683365173/)
