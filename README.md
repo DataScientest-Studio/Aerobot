@@ -112,7 +112,15 @@ python AeroBOT.py --help
 ```
 for help.
 After successfull execution, you will see the classification report printed in the terminal and ```.pkl``` files created in ```./data/models/```
-
+If you wish, you may now delete the repository from your computer, and deactivate and delete the conda environment:
+```
+conda deactivate
+conda env remove --name aerobot_venv
+```
+Verify the operation by listing your conda environments
+```
+conda env list
+```
 <!---
 ## Streamlit App - WORK in progress
 
