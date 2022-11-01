@@ -63,7 +63,10 @@ This file was generated with
 ```
 on Google Colab and contains an exhaustive list of the necessary packages.
 
+You
+
 ## How to clone this repository
+Unless you want to stay up-to-date with any changes in the repo by using git, you can also simply *copy* the repo contents to a local folder (see 'Code' button > Download zip) and ignore the following steps.
 1. In your terminal, use ```cd``` to move to the directory, in which you wish to clone the repo.
 2. [Generate a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) from from your GitHUB account (google is your friend).
 3. Execute the following lines in your terminal to clone the repo locally.
@@ -76,7 +79,7 @@ git clone https://"$git_token"@github.com/"$username"/"$repository"
 ## How to execute the AeroBOT.py program in a (mini)conda environment
 Pre-requisites: 
 - [Install (mini)conda](https://docs.conda.io/en/latest/miniconda.html)
-- The present Aerbot repository is cloned locally (see instructions above)
+- The present Aerbot repository is cloned or copied locally (see instructions above)
 
 1. Create a conda environment named e.g. 'aerobot_venv'
 ```
