@@ -63,10 +63,20 @@ This file was generated with
 ```
 on Google Colab and contains an exhaustive list of the necessary packages.
 
-## Installation in a (mini)conda environment
+## How to clone this repository
+1. In your terminal, use ```cd``` to move to the directory, in which you wish to clone the repo.
+2. [Generate a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) from from your GitHUB account (google is your friend).
+3. Execute the following lines in your terminal to clone the repo locally.
+```
+username='DataScientest-Studio'
+repository='Aerobot'
+git_token='[YOUR TOKEN]'
+git clone https://"$git_token"@github.com/"$username"/"$repository"
+```
+## How to execute the AeroBOT.py program in a (mini)conda environment
 Pre-requisites: 
-- (mini)conda is installed.
-- Aerbot repo is cloned locally.
+- [Install (mini)conda](https://docs.conda.io/en/latest/miniconda.html)
+- The present Aerbot repository is cloned locally (see instructions above)
 
 1. Create a conda environment named e.g. 'aerobot_venv'
 ```
@@ -76,7 +86,7 @@ This installs python v3.7.5 and basic packages, e.g. pip, necessary to install t
 
 2. Activate the environment
 ```
-conda activate aerobot_local
+conda activate aerobot_venv
 ```
 
 3. Navigate to the local mirror of the Aerobot repo using ```cd``` 
@@ -86,24 +96,25 @@ pip install -r requirements.txt
 ```
 This takes several minutes.
 
-4. Check the installation by listing the installed packages in 'aerobot_venv'.
+Check the installation by listing the installed packages in 'aerobot_venv'.
 ```
 conda list 
 ```
-5. Execute the ```AeroBOT.py``` program
-(make sure you have cd to the location of ```AeroBOT.py```)
+4. Execute the ```AeroBOT.py``` program
+(make sure you have ```cd``` to the location of ```AeroBOT.py```)
 ```
-python AeroBOT.py 10
+python AeroBOT.py 100
 ```
-This will infer the transformer model on the first 10 entries of the final test set.
-The program informs the user on its actions by printing info in the command line.
+This will infer the transformer model on the first 100 entries of the final test set.
 If necessary, run
 ```
 python AeroBOT.py --help
 ```
 for help.
+After successfull execution, you will see the classification report printed in the terminal and ```.pkl``` files created in ```./data/models/```
 
-## Streamlit App
+<!---
+## Streamlit App - WORK in progress
 
 **Add explanations on how to use the app.**
 
@@ -135,3 +146,4 @@ docker run --name streamlit-app -p 8501:8501 streamlit-app
 ```
 
 And again, the app should then be available at [localhost:8501](http://localhost:8501).
+--->
