@@ -1259,8 +1259,9 @@ def load_saved_transformer(filepath,
   be used in the CustomLayer or CumstomModel class definitions,
   see https://stackoverflow.com/questions/62280161/saving-keras-models-with-custom-layers
   """
-  print(f"Loading the model from directory \n {filepath}\n")
+  print(f"Will load the model from directory \n {filepath}\n")
   from tensorflow.keras.models import load_model
+  print("Loading model...")
   loaded_model = keras.models.load_model(filepath = filepath, 
                                         custom_objects={"ClassifTransformerModelML": ClassifTransformerModelML, 
                                                         "ConcatSlice": ConcatSlice},
