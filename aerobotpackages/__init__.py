@@ -5,6 +5,5 @@
 # Authors : 
 # Ioannis STASINOPOULOS
 #-----------------------------------------------------------\
-from .aerobotfunctions import *
 from .BERTTools import *
 # include additional package names here
