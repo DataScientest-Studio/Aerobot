@@ -13,9 +13,7 @@
 
 # Aerobot
 <!--- airplane image --->
-
-<a href="url"><img src="https://user-images.githubusercontent.com/97918270/167825700-7ed773a3-8088-4adb-9c81-3bed1f3a10a4.png" align="left" height="248" ></a>
-
+<a title="Kiefer. from Frankfurt, Germany, CC BY-SA 2.0 &lt;https://creativecommons.org/licenses/by-sa/2.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Lufthansa_Airbus_A380_and_Boeing_747_(16431502906).jpg"><img width="512" alt="Lufthansa Airbus A380 and Boeing 747 (16431502906)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lufthansa_Airbus_A380_and_Boeing_747_%2816431502906%29.jpg/512px-Lufthansa_Airbus_A380_and_Boeing_747_%2816431502906%29.jpg"></a>
 
 This repository contains the code for our 6-month project **AeroBOT**, developed during our [Data Scientist training programe](https://datascientest.com/en/data-scientist-course) at [DataScientest](https://datascientest.com/) in 2022.
 
