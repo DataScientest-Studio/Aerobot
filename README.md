@@ -70,7 +70,7 @@ on Google Colab and contains an exhaustive list of the necessary packages.
 ```
 username='DataScientest-Studio'
 repository='Aerobot'
-git_token='[YOUR TOKEN]'
+git_token='YOUR TOKEN'
 git clone https://"$git_token"@github.com/"$username"/"$repository"
 ```
 ## How to execute the AeroBOT.py program in a (mini)conda environment
