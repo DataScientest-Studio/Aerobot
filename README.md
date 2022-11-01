@@ -53,7 +53,7 @@ The table below
 
 ## Data
 The [data](./data) is composed of 3 subfolders:
-- [ASRS database](./data/ASRS%database) contains auxiliary files found on the ASRS website, e.g. ```CodingForm.pdf``` (label taxonomy) and important abbreviations.
+- [ASRS database](./data/ASRS%20database) contains auxiliary files found on the ASRS website, e.g. ```CodingForm.pdf``` (label taxonomy) and important abbreviations.
 - [models](./data/models)
 - [transformed](./data/transformed)
 These last 2 are practically empty, in order to avoid hosting large files on the GitHUB repo. They are populated with data once the user runs the program ```AeroBOT.py``` (see below).
