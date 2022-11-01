@@ -70,7 +70,7 @@ Pre-requisites:
 
 1. Create a conda environment named e.g. 'aerobot_venv'
 ```
-conda create --name aerobot_venv {python==3.7.5}
+conda create --name aerobot_venv python=3.7.5
 ```
 This installs python v3.7.5 and basic packages, e.g. pip, necessary to install the project packages later on.
 
