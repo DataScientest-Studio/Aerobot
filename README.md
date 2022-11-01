@@ -44,11 +44,33 @@ The rest of the content is found in the notebooks available on this repository.*
 
 ## Notebooks
 You can browse though the [notebooks](./notebooks). 
+The table below
+| Content     | Notebook name | Authors |
+| ----------- | ------------- | ------- |
+| Header      | Title         | IS, HA  |
+| Header      | Title         | IS, HA  |
+
 
 ## Data
-The [data](./data)
+The [data](./data) is composed of 3 subfolders:
+- [ASRS database](./data/ASRS database) contains auxiliary files found on the ASRS website, e.g. ```CodingForm.pdf``` (label taxonomy) and important abbreviations.
+- [models](./data/models)
+- [transformed](./data/transformed)
+These last 2 are practically empty, in order to avoid hosting large files on the GitHUB repo. They are populated with data once the user runs the program ```AeroBOT.py``` (see below).
 
-## AeroBOT.py Program
+
+## ```AeroBOT.py``` Program
+For demonstration purposes, this program performs **inference** on the **final test set** using transformer model *11_3_3*. 
+**Training** of this model takes at least an hour and exceeds the scope of a demo.
+
+```AeroBOT.py``` demonstrates the
+- conversion of the data from a pandas.DataFrame to a HuggingFace :hugs: dataset 
+- tokenization using the BERT tokenizer
+- conversion of the data from HuggingFace :hugs: dataset to TensorFlow dataset
+- inference using the saved model: calculation of the label probabilities ```y_pred_proba```, conversion of the probabilities to y_pred, i.e. binary (0,1) multilabels using ```threshold = 0.5```.
+
+and prints a classification report.
+It then saves .pkl files locally.
 
 ### Installation
 
