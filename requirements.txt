@@ -6,10 +6,10 @@
 #soupsieve==2.3.2.post1
 #beautifulsoup4-4.11.1
 
-google-api-python-client==2.65.0 
-google-auth-httplib2==0.1.0 
-httplib2==0.21.0 
-uritemplate==4.1.1
+#google-api-python-client==2.65.0 
+#google-auth-httplib2==0.1.0 
+#httplib2==0.21.0 
+#uritemplate==4.1.1
 ###########################################
 
 ###########################################
