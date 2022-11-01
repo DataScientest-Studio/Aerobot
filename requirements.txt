@@ -17,6 +17,7 @@ uritemplate==4.1.1
 ###########################################
 bokeh==2.3.3
 datasets @ git+https://github.com/huggingface/datasets@4dbec2dc263d307cc635d43519f3f449d45f886d
+gdown==4.5.3 # For downloading files from Google Drive
 h5py==3.1.0
 huggingface-hub==0.10.1
 joblib==1.2.0
@@ -65,4 +66,4 @@ transformers==4.23.1
 tweepy==3.10.0
 urllib3==1.25.11
 wordcloud==1.8.2.2
-xgboost==0.90
+# xgboost==0.90
