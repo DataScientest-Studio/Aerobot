@@ -190,6 +190,7 @@ And again, the app should then be available at [localhost:8501](http://localhost
 
 ## Credits
 - Ioannis STASINOPOULOS ([GitHub](https://github.com/Cochonaki)) / [LinkedIn](https://www.linkedin.com/in/ioannis-stasinopoulos/))
+- Helene ASSIR ([GitHub](https://github.com/EleniAmorgos)) / [LinkedIn](https://www.linkedin.com/in/heleneassir/))
 
 Project mentor:
 Alban THUET (DataScientest) [LinkedIn](https://www.linkedin.com/in/alban-thuet-683365173/)
