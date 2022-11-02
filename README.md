@@ -185,3 +185,5 @@ And again, the app should then be available at [localhost:8501](http://localhost
 
 Project mentor:
 Alban THUET (DataScientest) [LinkedIn](https://www.linkedin.com/in/alban-thuet-683365173/)
+  
+This project is licensed under the terms of the MIT license.
