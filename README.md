@@ -1,4 +1,3 @@
-
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
 ![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
@@ -26,8 +25,10 @@ This repository contains the code for our 6-month project **AeroBOT**, developed
 ## Project overview
 
 **AeroBOT** is an automatic text classification project that tackles timely challenges in **Technical Language Processing (TLP)**, i.e. the domain-driven approach to using **Natural Language Processing (NLP)** in a **technical engineering context** with heavy presence of technical **jargon**. 
+<br/>The methodology developped in the project is transposable to industrial uses cases involving textual data in predictive maintenance, production, customer relationship, human resources, legal domain, to state a few.
 
-We use approx. **100,000 labeled narratives** from **NASA**’s **Aviation Safety Reporting System (ASRS)** database, that describe **abnormal events** in the last 20 years in the **US airspace**. **Our goal** is to identify the most appropriate **target feature** in our dataset and **develop an algorithm** that correctly assigns labels to textual narratives. 
+In **AeroBOT** use approx. **100,000 labeled narratives** from **NASA**’s **Aviation Safety Reporting System (ASRS)** database, that describe **abnormal events** of the last 20 years in the **US airspace**.
+<br/>Our **objective** is to identify the most appropriate **target feature** in our dataset and **develop an algorithm** that correctly assigns labels to textual narratives. 
 
 We use a supervised approach for the **multiclass (x14), multiple-label** classification problem (more than 67% of the narratives have at least two different labels) with **imbalanced distribution** of labels (the most frequent label has ~30x higher occurrence compared to the least occuring one). 
 
@@ -37,9 +38,9 @@ We compare the **1-vs-all** (14 models trained for 14 labels to be correctly ass
 
 **Word embedding** models outperform BoW models and the retrained BERT-base model performs best, using raw data, with f1-scores ranging from **54% to 86%**, as measured on a final test set of ~10,000 entries, that was isolated in the beginning of the project. 
 
-**We observe that partially retraining the BERT-base model on our data results in a performance increase of tens of percent, compared to the use of the ‘frozen’ BERT-base.**
+**Partially retraining the BERT-base model on our data results in a performance increase of tens of percent, compared to the use of the ‘frozen’ BERT-base.**
 
-We present a **threshold optimization algorithm** that boosts the f1-score of our transformer model by 1% to 5%, depending on the label and without necessitating any training. 
+Our **threshold optimization algorithm** that boosts the f1-score of our transformer model by 1% to 5%, depending on the label and without necessitating any training. 
 
 Last but not least, we perform a **critical error analysis** by discussing the observed variations on the performance of our transformer model.
 
