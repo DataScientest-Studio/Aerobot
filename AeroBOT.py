@@ -1,6 +1,7 @@
 ##############################################
 # IMPORT PACKAGES
 ##############################################
+print("Importing packages...")
 # Generic
 import os
 import gdown
@@ -10,7 +11,6 @@ import pickle as pkl
 
 # Custom-made, project-specific packages
 from aerobotpackages import train_load_transformer_model
-#from aerobotpackages import  y_prob_to_y_pred, y_multilabel_to_binary, convert_clf_rep_to_df_multilabel_BERT_kw_args
 
 ##############################################
 # DOWNLOAD FILES
