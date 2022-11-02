@@ -56,6 +56,14 @@ The table below
 | Header      | Title         | IS, HA  |
 | Header      | Title         | IS, HA  |
 
+![Screenshot 2022-11-02 at 15 57 05](https://user-images.githubusercontent.com/97918270/199523704-fc0f6f7a-9c09-4529-89ff-3d2d284afd6a.png)
+![Screenshot 2022-11-02 at 16 09 00](https://user-images.githubusercontent.com/97918270/199526484-0b62d731-8498-40b1-bd49-f268bc4249ec.png)
+Flow diagram illustrating the mutual dependencies of the project's ```.ipynb```  notebooks and the flow of data. 
+The large dashed arrows show the continuation of the path across the line break.
+The box colors indicate the various types: 
+- data files (white), model files (orange) 
+- notebooks on data exploration (gray) notebooks generating outputs (blue)
+
 
 ## Data
 The [data](./data) is composed of 3 subfolders:
