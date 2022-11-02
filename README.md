@@ -4,6 +4,7 @@
 ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
+<!--- ![HF](https://user-images.githubusercontent.com/97918270/199447402-9d02f298-c4a9-4e98-bf7f-5155658adac8.png) -->
 <!---
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 <![GitHub Actions](https://img.shields.io/badge/githubactions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)>
@@ -32,7 +33,7 @@ In **AeroBOT** use approx. **100,000 labeled narratives** from **NASA**’s **Av
 
 We use a supervised approach for the **multiclass (x14), multiple-label** classification problem (more than 67% of the narratives have at least two different labels) with **imbalanced distribution** of labels (the most frequent label has ~30x higher occurrence compared to the least occuring one). 
 
-We compare the classification performance of **bag-of-word (BoW) models** (Decision Trees, Random Forest, Naive Bayes, SVM) combined with **preprocessing** of the data vs. **word embedding algorithms** vs. the **state-of-the-art transformer model ```BERT```**, that we fine-tune, i.e. partially re-train on our data in a **Transfer Learning** context. 
+We compare the classification performance of **bag-of-word (BoW) models** (Decision Trees, Random Forest, Naive Bayes, SVM) combined with **preprocessing** of the data vs. **word embedding algorithms** vs. the **state-of-the-art transformer model [```BERT```](http://arxiv.org/abs/1810.04805)**, that we fine-tune, i.e. partially re-train on our data in a **Transfer Learning** context. 
 
 We compare the **1-vs-all** (14 models trained for 14 labels to be correctly assigned) vs. the **multilabel** approach (one model predicts all 14 labels for each narrative), the latter producing **versatile** models that are relatively **fast** to train (~1h for the retrained transformer model, on Google Colab with premium GPU).
 
