@@ -49,8 +49,7 @@ Last but not least, we perform a **critical error analysis** by discussing the o
 The rest of the content is found in the notebooks available on this repository.*
 
 ## Notebooks
-You can browse though the [notebooks](./notebooks). 
-The table below
+The table below summarizes the ```.ipynb``` notebooks in AeroBOT (liks point to the files in the [notebooks folder](./notebooks)) and the diagram illustrates both their mutual dependencies and the flow of data. 
   
 | Notebook Name                                                                                                                                                                                                                                                                                 | Description                                                                                                                      | Authors    |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------- |
