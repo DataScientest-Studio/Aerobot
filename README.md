@@ -77,7 +77,7 @@ The table below summarizes the ```.ipynb``` notebooks in AeroBOT (liks point to 
 | [09 Threshold optimization final test set](https://github.com/DataScientest-Studio/Aerobot/blob/main/notebooks/main/09%20Threshold%20optimization%20final%20test%20set.ipynb)                                                                                                                 | Threshold optimization algorithm                                                                                                 | IS         |
 
   
-![Screenshot 2022-11-02 at 15 57 05](https://user-images.githubusercontent.com/97918270/199523704-fc0f6f7a-9c09-4529-89ff-3d2d284afd6a.png)
+![Screenshot 2022-11-03 at 15 43 47](https://user-images.githubusercontent.com/97918270/199752422-9afd834e-edc8-499e-bb4e-acdde55431fb.png)
 ![Screenshot 2022-11-02 at 16 09 00](https://user-images.githubusercontent.com/97918270/199526484-0b62d731-8498-40b1-bd49-f268bc4249ec.png)
 Flow diagram illustrating the mutual dependencies of the project's ```.ipynb```  notebooks and the flow of data. 
 The large dashed arrows show the continuation of the path across the line break.
