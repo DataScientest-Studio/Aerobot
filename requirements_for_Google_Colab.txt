@@ -1,5 +1,3 @@
-# Change No2 on tmp branch
-
 absl-py==1.3.0
 aeppl==0.0.33
 aesara==2.7.9
