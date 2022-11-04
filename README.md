@@ -28,7 +28,7 @@ This repository contains the code for our 6-month project **AeroBOT**, developed
 **AeroBOT** is an automatic text classification project that tackles timely challenges in **Technical Language Processing (TLP)**, i.e. the domain-driven approach to using **Natural Language Processing (NLP)** in a **technical engineering context** with heavy presence of technical **jargon**. 
 <br/>The methodology developped in the project is transposable to industrial uses cases involving textual data in predictive maintenance, production, customer relationship, human resources, legal domain, to state a few.
 
-In **AeroBOT** use approx. **100,000 labeled narratives** from **NASA**’s **Aviation Safety Reporting System (ASRS)** database, that describe **abnormal events** of the last 20 years in the **US airspace**.
+In **AeroBOT** we use approx. **100,000 labeled narratives** from **NASA**’s **Aviation Safety Reporting System (ASRS)** database, that describe **abnormal events** of the last 20 years in the **US airspace**.
 <br/>Our **objective** is to identify the most appropriate **target feature** in our dataset and **develop an algorithm** that correctly assigns labels to textual narratives. 
 
 We use a supervised approach for the **multiclass (x14), multiple-label** classification problem (more than 67% of the narratives have at least two different labels) with **imbalanced distribution** of labels (the most frequent label has ~30x higher occurrence compared to the least occuring one). 
