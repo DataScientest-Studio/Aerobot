@@ -96,7 +96,7 @@ These last 2 are practically empty, in order to avoid hosting large files on the
 
 ## ```AeroBOT.py``` Program
 For demonstration purposes, this program performs **inference** on the **final test set** using transformer model *11_3_3*. 
-**Training** of this model takes at least an hour and exceeds the scope of a demo.
+**Training** of this model takes at least an hour on Google Colab premises and thus exceeds the scope of a demo. 
 
 ```AeroBOT.py``` demonstrates the
 - conversion of the data from a pandas.DataFrame to a HuggingFace :hugs: dataset 
