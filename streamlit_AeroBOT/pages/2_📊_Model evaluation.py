@@ -3,12 +3,11 @@ import pandas as pd
 import numpy as np
 import os
 import gdown
-import zipfile
-import argparse
 import pickle as pkl
 import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path  
 
 
 st.set_page_config(page_title="AeroBOT Demo",
@@ -23,8 +22,6 @@ tab1, tab2 = st.tabs(["Cat", "Dog"])
 with tab1:
    st.header("A cat")
    st.image("https://static.streamlit.io/examples/cat.jpg", width=200)
-
-
 
 ###############################################
 # EXPORT THIS INTO A PACKAGE
@@ -145,38 +142,28 @@ dict_model_color={'Decision Tree':'#15B01A' ,
             }
 
 ##############################################
-# DOWNLOAD FILES
+# LOAD FILES
 ##############################################
-### THIS PART IS TEMPORARY, THE DATA WILL BE DOWNLOADED TOGETHER WITH THE GITHUB REPO, AS IT 
-# IS DONE FOR AeroBOT.py demo
-if not os.path.exists('./data/transformed/model_results_diffBLM_bestmodel.csv'):
-    # Download final test set data
-    os.chdir("./data/transformed/") 
-    url = 'https://drive.google.com/uc?id=AV7Hlp-nZL-dEorsG156ZCUwWMuGWfk/'
-    output = 'model_results_diffBLM_bestmodel.csv'
-    print('Downloadingfile...')
-    gdown.download(url, output, quiet=False)
-    # Move up 2 directories, to the location of the present script
-    os.chdir('..')
-    os.chdir('..')
-else: 
-    print('model_results_diffBLM_bestmodel.csv is already present.')
-##############################################################################################
+# Define useful directories
+streamlit_root_dir = Path.cwd()
+AeroBOT_root_dir = streamlit_root_dir.parents[0]
+trans_data_path = AeroBOT_root_dir.joinpath('data', 'transformed')
 
 @st.cache
 def load_df(filename):
-  os.chdir("./data/transformed/") 
+  os.chdir(trans_data_path) 
   df = pd.read_csv(filename).drop(columns = ['Unnamed: 0'])
-  os.chdir('..')
-  os.chdir('..')
-  print('Data loaded!')
+  os.chdir(streamlit_root_dir)
+  print('Streamlit data loaded.')
   return df
 
-model_results_diffBLM_bestmodel = load_df('model_results_diffBLM_bestmodel_1.csv')
-print("\nA Dataframe with", len(model_results_diffBLM_bestmodel), "entries has been loaded")
+model_results_diffBLM_bestmodel = load_df('model_results_diffBLM_bestmodel_20221207.csv')
+base_line_vs_BERT_results = load_df('baseline_vs_best_BERT_20221207.csv')
 
-# st.write(model_results_diffBLM_bestmodel)
-
+##############################################
+# Interactiveness
+##############################################
+# Define choices for the user 
 model_approaches = model_results_diffBLM_bestmodel['approach'].unique()
 
 anomaly_tuple = (
@@ -195,6 +182,21 @@ anomaly_tuple = (
     '13_Ground Excursion',
     #'14_No Specific Anomaly Occurred'
     )
+anomaly = 'Anomaly_' + st.selectbox(
+    'Choose an anomaly label from the drop-down list:', anomaly_tuple).split(sep = '_')[1]
+
+approaches_to_plot = st.multiselect(
+    'You can limit the plot to the desired model approach(es)',
+    model_approaches,
+    model_approaches)
+
+abs_or_rel = st.radio(
+    'Select how to plot the scores:',
+    ('Absolute values', 'Difference with respect to baseline model (DT)'))
+if abs_or_rel == 'Difference with respect to baseline model (DT)':
+  modality_col = '1'
+else:
+  modality_col = 'absolute'
 
 # I THOUGHT THIS WOULD SPEED UP THE PLOTTING, BUT RUNNING create_anomaly_figs_dict() takes ages
 # @st.cache
@@ -208,22 +210,6 @@ anomaly_tuple = (
 #   return anomaly_figs_dict
 
 # anomaly_figs_dict = create_anomaly_figs_dict(anomaly_tuple, model_results_diffBLM_bestmodel)
-
-
-anomaly = 'Anomaly_' + st.radio("Choose an anomaly label", anomaly_tuple).split(sep = '_')[1]
-
-approaches_to_plot = st.multiselect(
-    'You can limit the plot to the desired model approach(es)',
-    model_approaches,
-    model_approaches)
-
-abs_or_rel = st.selectbox(
-    'Select how to plot the scores:',
-    ('Absolute values', 'Difference with respect to baseline model (DT)'))
-if abs_or_rel == 'Difference with respect to baseline model (DT)':
-  modality_col = '1'
-else:
-  modality_col = 'absolute'
 
 st.markdown("""
             The plot below shows 
@@ -263,7 +249,6 @@ with st.spinner('Plotting...'):
                 orient='h',
                 height=8)
           )
-# st.success('Done!')
 
 st.markdown("""
             Our criterion for polyvalence reads as follows: 
@@ -307,8 +292,6 @@ st.markdown("""
             ### Baseline model vs. best BERT model     
             """)          
 
-base_line_vs_BERT_results = load_df('baseline_vs_best_BERT.csv')
-print("\nA Dataframe with", len(base_line_vs_BERT_results), "entries has been loaded")
 
 # @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
@@ -359,3 +342,5 @@ def plot_baseline_vs_BERT(df, metric):
 with st.spinner('Plotting...'):
   st.pyplot(plot_baseline_vs_BERT(base_line_vs_BERT_results[base_line_vs_BERT_results['anomaly'] != '14_No Specific Anomaly Occurred'], 
             'f1-score'))
+
+st.success('Page refreshed successfuly.')
