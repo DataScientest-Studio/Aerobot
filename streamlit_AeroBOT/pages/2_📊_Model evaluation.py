@@ -28,101 +28,208 @@ with tab1:
 # @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
 def plot_diff_metric_universal(df_model_results, 
-                               modality_col,
-                               anomaly_list=[], 
-                               metric="f1-score", 
-                               dict_model_color={}
-                               ):
-    """
-    Plots, for each anomaly, the evolution of  "metric" 
-    Inputs: 
-    - model_results : a df containing the classification report metrics of our different "models" to plot
-      Models include : classifier type and modeling options such as  raw/PP narratives, std or under sampling, count_vectorizer options
-    - a list of anomaly features : if the list is empty : 
-    - metric : one of the model results metrics : "precision", "recall", "f1-score" or "support"
-    - dict_color : dictionnary defining a color for each type of model listed (grey if non listed)
+                                modality_col,anomaly_list=[],
+                                metric="f1-score",
+                                dict_model_color={},
+                                color_by='model',
+                                model_name='model_label'):
+  """
+  Plots, for each anomaly, the evolution of  "metric" 
+  Inputs: 
+  - model_results : a df containing the classification report metrics of our different "models" to plot
+    Models include : classifier type and modeling options such as  raw/PP narratives, std or under sampling, count_vectorizer options
+  - a list of anomaly features : if the list is empty : 
+  - metric : one of the model results metrics : "precision", "recall", "f1-score" or "support"
+  - dict_color : dictionnary defining a color for each type of model listed (grey if non listed)
+    - color_by = 'model' (default or 'approach'
+  - model_name = 'model_label'(default) or any columns with a model name   
+  Returns:
+  - 1 plot per anomaly listed
+    - for models using undersampling, the line  of the rectangle is thiner
+    - for models using raw narratives (vs PP), the line  of the rectangle is grey instead of black
+
+  """
+  if anomaly_list==[] :
+    anomaly_list=df_model_results['anomaly'].unique().tolist()
+  for anomaly in anomaly_list :
+
+    # Anomaly_label without the prefix "Anomaly_"
+    anomaly_label=anomaly.replace("Anomaly_", "")  
     
-    Returns:
-    - 1 plot per anomaly listed
-      - for models using undersampling, the line  of the rectangle is thiner
-      - for models using raw narratives (vs PP), the line  of the rectangle is grey instead of black
+    metric_row=metric
+    if modality_col == 'absolute': 
+      title_ToPlot=anomaly_label+" :\n" + metric
+    else:      
+      title_ToPlot=anomaly_label+" :\n  Difference of "+ metric+" vs. Baseline model "
 
-    """
-    if anomaly_list == [] :
-      anomaly_list = df_model_results['anomaly'].unique().tolist()
-    for anomaly in anomaly_list :
-  
-      # Anomaly_label without the prefix "Anomaly_"
-      anomaly_label=anomaly.replace("Anomaly_", "")  
-      
-      metric_row=metric
-      if modality_col == 'absolute': 
-        title_ToPlot=anomaly_label+" :\n" + metric
-      else:      
-        title_ToPlot=anomaly_label+" :\n  Difference of "+ metric+" vs. Baseline model "
-
-      # dataframe containing only the rows to plot
-      sub_df = df_model_results[(df_model_results['anomaly'] == anomaly) & (df_model_results['metric'] == metric_row)].copy()
-      # label of the model , including options
-      sub_df=sub_df.set_index('model_label')
-      # defining color, edgecolot, linewidth of the bar according to the model characteristics
+    # dataframe containing only the rows to plot
+    sub_df = df_model_results[(df_model_results['anomaly'] == anomaly) & (df_model_results['metric'] == metric_row)] .copy()
+    # label of the model , including options
+    sub_df=sub_df.set_index(model_name)
+    # defining color, edgecolot, linewidth of the bar according to the model characteristics
+    if color_by=='model' :
       sub_df['color']=sub_df['classifier'].apply(lambda x: dict_model_color[x] if x in list(dict_model_color.keys()) else 'grey')
       sub_df['edgecolor']=sub_df['preprocessing'].apply(lambda x: 'grey' if x==0 else 'black')
       sub_df['linewidth']=sub_df['undersampling'].apply(lambda x: 3 if x==0 else 1)
-      
-      # Plot
-      fig = plt.figure()
-      plt.style.use('ggplot')
-      plt.rcParams['axes.titlesize'] = 15
-      plt.rcParams['axes.labelsize'] = 10
-      plt.rcParams['xtick.labelsize'] = 10
-      plt.rcParams['ytick.labelsize'] = 13
-      plt.rc('legend', fontsize=10)    # legend fontsize
+    elif color_by=='approach' :
+      sub_df['color']=sub_df['approach'].apply(lambda x: dict_model_color[x] if x in list(dict_model_color.keys()) else 'grey')
+      sub_df['edgecolor']='black'
+      sub_df['linewidth']= 1
 
-      
-      num_classes = len(sub_df)
-      fig_shape=(8,num_classes//4)
+    # Plot
+    fig = plt.figure()
+    plt.style.use('ggplot')
+    plt.rcParams['axes.titlesize'] = 15
+    plt.rcParams['axes.labelsize'] = 10
+    plt.rcParams['xtick.labelsize'] = 10
+    plt.rcParams['ytick.labelsize'] = 13
+    plt.rc('legend', fontsize=10)    # legend fontsize
 
-      colors=list(sub_df['color'])
-      edgecolors=list(sub_df['edgecolor'])
-      linewidths=list(sub_df['linewidth'])
-      iter_color = iter(colors)
+    num_classes = len(sub_df)
+    fig_shape=(8,num_classes//3.5)
 
-      sub_df[modality_col].plot.barh(title=title_ToPlot, 
-                                                      ylabel="Topics",
-                                                      color=colors,
-                                                      edgecolor=edgecolors,
-                                                      linewidth=linewidths,
-                                                      figsize=fig_shape) # indicative value for BERT models only: (8,7)
-      if metric != "support":
-        if modality_col == 'absolute': 
-          plt.xlim([0, 1])
-        else:
-          plt.xlim([-1,1])
-        plt.xticks([])
+    colors=list(sub_df['color'])
+    edgecolors=list(sub_df['edgecolor'])
+    linewidths=list(sub_df['linewidth'])
+    iter_color = iter(colors)
+
+    barh=sub_df[modality_col].plot.barh(title=title_ToPlot, 
+                                                    ylabel="Topics",
+                                                    color=colors,
+                                                    edgecolor=edgecolors,
+                                                    linewidth=linewidths,
+                                                    figsize=fig_shape) # indicative value for BERT models only: (8,7)
+
+    # ytick labels in color : according to approach + highlight_best_models
+    for ytick, color in zip(barh.get_yticklabels(), colors):
+      ytick.set_color(color)
+    
+    if metric != "support":
+      if modality_col == 'absolute': 
+        plt.xlim([0, 1])
+      else:
+        plt.xlim([-1,1])
+      plt.xticks([])
+      for i, v in enumerate(sub_df[modality_col]):
+        c = next(iter_color)
+        if v>=0 :
+          y=v
+        else :
+          y=v-0.2
+        plt.text(y, i,           # si bar au lieu de barh : inverser v et i
+                  " "+str(round(v*100,1))+"%", 
+                  color=c, 
+                  va='center', 
+                  fontweight='bold')
+
+    else : 
         for i, v in enumerate(sub_df[modality_col]):
           c = next(iter_color)
-          if v>=0 :
-            y=v
-          else :
-            y=v-0.2
-          plt.text(y, i,           # si bar au lieu de barh : inverser v et i
-                   " "+str(round(v*100,1))+"%", 
-                    color=c, 
-                    va='center', 
-                    fontweight='bold')
+          plt.text(v, i,           # si bar au lieu de barh : inverser v et i
+                  " "+str(int(v)), 
+                  color=c, 
+                  va='center', 
+                  fontweight='bold')
+    plt.ylabel("Approach and Model number", fontsize = 14)
 
-      else : 
-          for i, v in enumerate(sub_df[modality_col]):
-            c = next(iter_color)
-            plt.text(v, i,           # si bar au lieu de barh : inverser v et i
-                    " "+str(int(v)), 
-                    color=c, 
-                    va='center', 
-                    fontweight='bold')
+  return barh
 
-    print(modality_col)
-    return fig
+# def plot_diff_metric_universal(df_model_results, 
+#                                modality_col,
+#                                anomaly_list=[], 
+#                                metric="f1-score", 
+#                                dict_model_color={}
+#                                ):
+#     """
+#     Plots, for each anomaly, the evolution of  "metric" 
+#     Inputs: 
+#     - model_results : a df containing the classification report metrics of our different "models" to plot
+#       Models include : classifier type and modeling options such as  raw/PP narratives, std or under sampling, count_vectorizer options
+#     - a list of anomaly features : if the list is empty : 
+#     - metric : one of the model results metrics : "precision", "recall", "f1-score" or "support"
+#     - dict_color : dictionnary defining a color for each type of model listed (grey if non listed)
+    
+#     Returns:
+#     - 1 plot per anomaly listed
+#       - for models using undersampling, the line  of the rectangle is thiner
+#       - for models using raw narratives (vs PP), the line  of the rectangle is grey instead of black
+
+#     """
+#     if anomaly_list == [] :
+#       anomaly_list = df_model_results['anomaly'].unique().tolist()
+#     for anomaly in anomaly_list :
+  
+#       # Anomaly_label without the prefix "Anomaly_"
+#       anomaly_label=anomaly.replace("Anomaly_", "")  
+      
+#       metric_row=metric
+#       if modality_col == 'absolute': 
+#         title_ToPlot=anomaly_label+" :\n" + metric
+#       else:      
+#         title_ToPlot=anomaly_label+" :\n  Difference of "+ metric+" vs. Baseline model "
+
+#       # dataframe containing only the rows to plot
+#       sub_df = df_model_results[(df_model_results['anomaly'] == anomaly) & (df_model_results['metric'] == metric_row)].copy()
+#       # label of the model , including options
+#       sub_df=sub_df.set_index('model_label')
+#       # defining color, edgecolot, linewidth of the bar according to the model characteristics
+#       sub_df['color']=sub_df['classifier'].apply(lambda x: dict_model_color[x] if x in list(dict_model_color.keys()) else 'grey')
+#       sub_df['edgecolor']=sub_df['preprocessing'].apply(lambda x: 'grey' if x==0 else 'black')
+#       sub_df['linewidth']=sub_df['undersampling'].apply(lambda x: 3 if x==0 else 1)
+      
+#       # Plot
+#       fig = plt.figure()
+#       plt.style.use('ggplot')
+#       plt.rcParams['axes.titlesize'] = 15
+#       plt.rcParams['axes.labelsize'] = 10
+#       plt.rcParams['xtick.labelsize'] = 10
+#       plt.rcParams['ytick.labelsize'] = 13
+#       plt.rc('legend', fontsize=10)    # legend fontsize
+
+      
+#       num_classes = len(sub_df)
+#       fig_shape=(8,num_classes//4)
+
+#       colors=list(sub_df['color'])
+#       edgecolors=list(sub_df['edgecolor'])
+#       linewidths=list(sub_df['linewidth'])
+#       iter_color = iter(colors)
+
+#       sub_df[modality_col].plot.barh(title=title_ToPlot, 
+#                                                       ylabel="Topics",
+#                                                       color=colors,
+#                                                       edgecolor=edgecolors,
+#                                                       linewidth=linewidths,
+#                                                       figsize=fig_shape) # indicative value for BERT models only: (8,7)
+#       if metric != "support":
+#         if modality_col == 'absolute': 
+#           plt.xlim([0, 1])
+#         else:
+#           plt.xlim([-1,1])
+#         plt.xticks([])
+#         for i, v in enumerate(sub_df[modality_col]):
+#           c = next(iter_color)
+#           if v>=0 :
+#             y=v
+#           else :
+#             y=v-0.2
+#           plt.text(y, i,           # si bar au lieu de barh : inverser v et i
+#                    " "+str(round(v*100,1))+"%", 
+#                     color=c, 
+#                     va='center', 
+#                     fontweight='bold')
+
+#       else : 
+#           for i, v in enumerate(sub_df[modality_col]):
+#             c = next(iter_color)
+#             plt.text(v, i,           # si bar au lieu de barh : inverser v et i
+#                     " "+str(int(v)), 
+#                     color=c, 
+#                     va='center', 
+#                     fontweight='bold')
+
+#     print(modality_col)
+#     return fig
 ###################################################################
 # Definition of color coding for each model type (grey otherwise in function)
 dict_model_color={'Decision Tree':'#15B01A' , 
@@ -139,6 +246,15 @@ dict_model_color={'Decision Tree':'#15B01A' ,
           #  'BERT_BASE': '#f14124',
             'BERT_BASE UNFROZEN': '#f14124',
             'BERT_BASE FROZEN': '#766d6b',
+            }
+
+# Definition of color coding for each model type (grey otherwise in function)
+dict_approach_color={'(1) Base line model':'#595959', 
+            '(2) BoW Unsupervised feat. selection':'#16a3e0',
+            '(3) BoW Supervised feat. selection':'#0d5ddf',
+            '(4) Word-Embedding':'#962c61',
+            '(5) BERT Unfrozen': '#f14124',
+            '(5) BERT Frozen': '#766d6b',
             }
 
 ##############################################
@@ -194,7 +310,7 @@ abs_or_rel = st.radio(
     'Select how to plot the scores:',
     ('Absolute values', 'Difference with respect to baseline model (DT)'))
 if abs_or_rel == 'Difference with respect to baseline model (DT)':
-  modality_col = '1'
+  modality_col = 'diff'
 else:
   modality_col = 'absolute'
 
@@ -221,13 +337,23 @@ st.latex(r'''
     \text{diff}_{\text{ f1-score}}^{\text{ model}} (\text{anomaly}) = \text{f1-score}^{\text{ model}} (\text{anomaly}) - \text{f1-score}^{\text{ baseline}} (\text{anomaly})
     ''')
 
+# with st.spinner('Plotting...'):
+#   st.pyplot(plot_diff_metric_universal(model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
+#                                                     modality_col,
+#                                                     anomaly_list=[anomaly],
+#                                                     metric="f1-score",
+#                                                     dict_model_color=dict_model_color)
+#                                                     )
+
 with st.spinner('Plotting...'):
-  st.pyplot(plot_diff_metric_universal(model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
-                                                    modality_col,
-                                                    anomaly_list=[anomaly],
-                                                    metric="f1-score",
-                                                    dict_model_color=dict_model_color)
-                                                    )
+  st.pyplot(plot_diff_metric_universal(df_model_results = model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
+                      modality_col = modality_col,
+                      anomaly_list = [anomaly],
+                      metric = "f1-score",
+                      dict_model_color = dict_approach_color,
+                      color_by='approach',
+                      model_name='approach and model number').figure # see https://github.com/streamlit/streamlit/issues/2609
+            )
 
 st.markdown("""
             Positive and negative values illustrate the over- and underperformance of the model, respectively. 
