@@ -8,6 +8,7 @@ import numpy as np
 import seaborn as sns
 import math # for math.pi etc.
 import time # time code execution
+from pathlib import Path  
 
 #######################
 # Pandas
@@ -1315,7 +1316,7 @@ def train_load_transformer_model(dir_name, experiment_name,
   None; this function saves data externally 
   """
 #   experiment_dir = dir_name + experiment_name
-  experiment_dir = dir_name.joinpath(experiment_name)
+  experiment_dir = Path(dir_name).joinpath(Path(experiment_name))
 
   if train_mode == True:
 
