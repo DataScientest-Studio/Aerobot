@@ -4,15 +4,13 @@
 print("Importing packages...")
 # Generic
 import os
-import gdown
-import zipfile
 import argparse
 import pickle as pkl
 import pathlib
 from pathlib import Path  
 
 # Custom-made, project-specific packages
-from aerobotpackages import train_load_transformer_model
+from aerobotpackages import train_load_transformer_model, download_from_GDrive
 
 ##############################################
 # DOWNLOAD FILES
@@ -21,43 +19,6 @@ print("Checking the presence of necessary data for inference, download if necess
 AeroBOT_root_dir = Path.cwd()
 trans_data_path = AeroBOT_root_dir.joinpath('data', 'transformed')
 model_data_path = AeroBOT_root_dir.joinpath('data', 'models')
-
-def download_from_GDrive(path, filename, url, zipped=False):
-    """
-    Inputs
-    -------
-    - path: path where to look for the file and if not present, download. Use OS-independent paths with the help of the pathlib library
-    - file_to_download (str): filename of the file to download
-    - url (str): Google Drive URL of the file to download. Example: 'https://drive.google.com/uc?id=1HZSxIfwGqg38yByiXxS4EjyLgeHI6yOv'
-    
-    If filename is .zip, will unzip it into a folder named [filename].
-
-    Return
-    -------
-    None
-    """
-    if path.joinpath('11_3_3').exists(): # the model has been already unzipped
-        print('check this:', path.joinpath('11_3_3').exists())
-        return None 
-
-    if not path.joinpath(filename).exists(): # no files are present
-        os.chdir(path) 
-        print("Downloading file '{}'...".format(filename))
-        gdown.download(url, filename, quiet=False)
-
-    else:
-        print("File '{}' is already present.".format(filename))
-        if filename[-4:] == '.zip':
-            os.chdir(model_data_path) 
-            with zipfile.ZipFile(filename, 'r') as zip_ref:
-                print('Unzipping the file...')
-                zip_ref.extractall('') # if '', extracts into pwd     
-            print("Deleting zip file...")
-            os.remove(filename)
-            print("Zip file was deleted successfully.")
-    os.chdir(AeroBOT_root_dir)
-    
-    return None
 
 download_from_GDrive(trans_data_path, 
                     filename = 'df_test_for_Anomaly_prediction.pkl', 
@@ -69,6 +30,7 @@ download_from_GDrive(model_data_path,
 download_from_GDrive(trans_data_path, 
                     filename = 'model_results_diffBLM_bestmodel_20221207.csv', 
                     url = 'https://drive.google.com/uc?id=1Fv__EH0Z6gUSirpKzEmrDUsKkbBtxMEb')                    
+os.chdir(AeroBOT_root_dir)
 
 ##############################################
 # Manage the arguments passed in the cmd line
@@ -89,7 +51,6 @@ os.chdir(trans_data_path)
 print("Loading pd.DataFrame...")
 with open("df_test_for_Anomaly_prediction.pkl", "rb") as f:
     loaded_data = pkl.load(f)
-
 df = loaded_data
 os.chdir(AeroBOT_root_dir)
 print("A Dataframe with", len(df), "entries has been loaded.")
@@ -107,7 +68,6 @@ for col in df.columns:
 # Infer on final test set
 ##############################################
 experiment_name = '11_3_3'
-
 train_load_transformer_model(
           dir_name = str(model_data_path) + pathlib.os.sep, # on MAC-OS: pathlib.os.sep = '/'
           experiment_name = '11_3_3',

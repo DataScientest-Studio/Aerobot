@@ -4,6 +4,9 @@
 #####################################################################################################
 # Import generic packages
 #####################################################################################################
+import os
+import zipfile
+import gdown
 import numpy as np
 import seaborn as sns
 import math # for math.pi etc.
@@ -1949,3 +1952,43 @@ def plot_PR_curve_opt_thresh(anomalies, y_test, y_pred_proba, opt_thresholds, op
 
   plt.legend(lines, labels, bbox_to_anchor=(1, 0.8)); # here we use our lists of lines and labels
 #################################################################################################   
+
+#####################################################################################################
+# OTHE AUXILIARY FUNCTIONS
+#####################################################################################################
+
+def download_from_GDrive(path, filename, url):
+    """
+    Inputs
+    -------
+    - path: path where to look for the file and if not present, download. Use OS-independent paths with the help of the pathlib library
+    - file_to_download (str): filename of the file to download
+    - url (str): Google Drive URL of the file to download. Example: 'https://drive.google.com/uc?id=1HZSxIfwGqg38yByiXxS4EjyLgeHI6yOv'
+    
+    If filename is .zip, will unzip it into a folder named [filename].
+
+    Return
+    -------
+    None
+    """
+    if path.joinpath('11_3_3').exists(): # the model has been already unzipped
+        print('check this:', path.joinpath('11_3_3').exists())
+        return None 
+
+    if not path.joinpath(filename).exists(): # no files are present
+        os.chdir(path) 
+        print("Downloading file '{}'...".format(filename))
+        gdown.download(url, filename, quiet=False)
+
+    else:
+        print("File '{}' is already present.".format(filename))
+        if filename[-4:] == '.zip':
+            os.chdir(path) 
+            with zipfile.ZipFile(filename, 'r') as zip_ref:
+                print('Unzipping the file...')
+                zip_ref.extractall('') # if '', extracts into pwd     
+            print("Deleting zip file...")
+            os.remove(filename)
+            print("Zip file was deleted successfully.")
+
+    return None
