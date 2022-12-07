@@ -15,14 +15,8 @@ st.set_page_config(page_title="AeroBOT Demo",
                   page_icon="✈") #🛩
 st.markdown("""
           # 📊 Model Evaluation
-          ### Choosing the best model
+          ### Choosing the best model for your work
           """)
-
-tab1, tab2 = st.tabs(["Cat", "Dog"])
-
-with tab1:
-   st.header("A cat")
-   st.image("https://static.streamlit.io/examples/cat.jpg", width=200)
 
 ###############################################
 # EXPORT THIS INTO A PACKAGE
@@ -251,175 +245,206 @@ def load_df(filename):
 model_results_diffBLM_bestmodel = load_df('model_results_diffBLM_bestmodel_20221207.csv')
 base_line_vs_BERT_results = load_df('baseline_vs_best_BERT_20221207.csv')
 
-##############################################
-# Interactiveness
-##############################################
-# Define choices for the user 
-model_approaches = model_results_diffBLM_bestmodel['approach'].unique()
 
-anomaly_tuple = (
-    '01_Deviation / Discrepancy - Procedural',
-    '02_Aircraft Equipment',
-    '03_Conflict',
-    '04_Inflight Event / Encounter',
-    '05_ATC Issue',
-    '06_Deviation - Altitude',
-    '07_Deviation - Track / Heading',
-    '08_Ground Event / Encounter',
-    '09_Flight Deck / Cabin / Aircraft Event',
-    '10_Ground Incursion',
-    '11_Airspace Violation',
-    '12_Deviation - Speed',
-    '13_Ground Excursion',
-    #'14_No Specific Anomaly Occurred'
-    )
-anomaly = 'Anomaly_' + st.selectbox(
-    'Choose an anomaly label from the drop-down list:', anomaly_tuple).split(sep = '_')[1]
+tab1, tab2 = st.tabs(["👩‍✈️👨‍✈️ Workspace for ASRS Experts", 
+                    "👩‍💼👨‍💼 Workspace for ASRS Admins"])
 
-approaches_to_plot = st.multiselect(
-    'You can limit the plot to the desired model approach(es)',
-    model_approaches,
-    model_approaches)
+with tab1:
+    st.header("👩‍✈️👨‍✈️ Expert's workspace")
 
-highlight_best_models = False # global variable
+    st.markdown("""
+              Welcome to your dashboard, dear ASRS experts!
+              
+              Here you can identify the model that performs best in classifying the narratives of your domain of expertise.
+              """)
+    ##############################################
+    # Interactiveness
+    ##############################################
+    # Define choices for the user 
+    model_approaches = model_results_diffBLM_bestmodel['approach'].unique()
 
-# I THOUGHT THIS WOULD SPEED UP THE PLOTTING, BUT RUNNING create_anomaly_figs_dict() takes ages
-# @st.cache
-# def create_anomaly_figs_dict(anomaly_tuple, df):
-#   anomaly_figs_dict = {anomaly: plot_diff_metric_universal(df_model_results=df.sort_values(by = ['import_order'], 
-#                                                   ascending = False),
-#                                                   anomaly_list=[anomaly],
-#                                                   metric="f1-score",
-#                                                   dict_model_color=dict_model_color)
-#   for anomaly in anomaly_tuple}
-#   return anomaly_figs_dict
+    anomaly_tuple = (
+        '01_Deviation / Discrepancy - Procedural',
+        '02_Aircraft Equipment',
+        '03_Conflict',
+        '04_Inflight Event / Encounter',
+        '05_ATC Issue',
+        '06_Deviation - Altitude',
+        '07_Deviation - Track / Heading',
+        '08_Ground Event / Encounter',
+        '09_Flight Deck / Cabin / Aircraft Event',
+        '10_Ground Incursion',
+        '11_Airspace Violation',
+        '12_Deviation - Speed',
+        '13_Ground Excursion',
+        #'14_No Specific Anomaly Occurred'
+        )
+    anomaly = 'Anomaly_' + st.selectbox(
+        'Choose the anomaly label of interest from the drop-down list:', anomaly_tuple).split(sep = '_')[1]
 
-# anomaly_figs_dict = create_anomaly_figs_dict(anomaly_tuple, model_results_diffBLM_bestmodel)
+    approaches_to_plot = st.multiselect(
+        'You can limit the plot to the desired model approach(es). Bag of Words (BoW) models are more interpretable, while BERT models are more perfomant. ',
+        model_approaches,
+        model_approaches)
 
-st.markdown("""
-            The plot below shows 
-            - either the absolute value of the _f1-score_ 
-            - or the difference in _f1-score_ with respect to the baseline model, for the models in the selected model approaches (see equation below). In this case positive and negative values illustrate the over- and underperformance of the model, respectively. 
-            """)
+    highlight_best_models = False # global variable
 
-st.latex(r'''
-    \text{diff}_{\text{ f1-score}}^{\text{ model}} (\text{anomaly}) = \text{f1-score}^{\text{ model}} (\text{anomaly}) - \text{f1-score}^{\text{ baseline}} (\text{anomaly})
-    ''')
-    
-abs_or_rel = st.radio(
-    'Select how to plot the scores:',
-    ('Absolute values', 'Difference with respect to baseline model (DT)'))
-if abs_or_rel == 'Difference with respect to baseline model (DT)':
-  modality_col = 'diff'
-else:
-  modality_col = 'absolute'
+    # I THOUGHT THIS WOULD SPEED UP THE PLOTTING, BUT RUNNING create_anomaly_figs_dict() takes ages
+    # @st.cache
+    # def create_anomaly_figs_dict(anomaly_tuple, df):
+    #   anomaly_figs_dict = {anomaly: plot_diff_metric_universal(df_model_results=df.sort_values(by = ['import_order'], 
+    #                                                   ascending = False),
+    #                                                   anomaly_list=[anomaly],
+    #                                                   metric="f1-score",
+    #                                                   dict_model_color=dict_model_color)
+    #   for anomaly in anomaly_tuple}
+    #   return anomaly_figs_dict
 
-with st.spinner('Plotting...'):
-  st.pyplot(plot_diff_metric_universal(df_model_results = model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
-                      modality_col = modality_col,
-                      anomaly_list = [anomaly],
-                      metric = "f1-score",
-                      dict_model_color = dict_approach_color,
-                      color_by='approach',
-                      model_name='approach and model number').figure # see https://github.com/streamlit/streamlit/issues/2609
-            )
-            
+    # anomaly_figs_dict = create_anomaly_figs_dict(anomaly_tuple, model_results_diffBLM_bestmodel)
+
+    st.markdown("""
+                The plot below shows 
+                - either the absolute value of the _f1-score_ for the selected anomaly label
+                - or the difference in _f1-score_ with respect to the baseline model (a Decision Tree - DT), see equation below. In this case positive and negative values illustrate the over- and underperformance of the model, respectively. 
+                """)
+
+    st.latex(r'''
+        \text{diff}_{\text{ f1-score}}^{\text{ model}} (\text{anomaly}) = \text{f1-score}^{\text{ model}} (\text{anomaly}) - \text{f1-score}^{\text{ baseline}} (\text{anomaly})
+        ''')
+
+    abs_or_rel = st.radio(
+        'Select how to plot the scores:',
+        ('Absolute values', 'Difference with respect to baseline model (DT)'))
+    if abs_or_rel == 'Difference with respect to baseline model (DT)':
+      modality_col = 'diff'
+    else:
+      modality_col = 'absolute'
+
+    with st.spinner('Plotting...'):
+      st.pyplot(plot_diff_metric_universal(df_model_results = model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
+                          modality_col = modality_col,
+                          anomaly_list = [anomaly],
+                          metric = "f1-score",
+                          dict_model_color = dict_approach_color,
+                          color_by='approach',
+                          model_name='approach and model number').figure # see https://github.com/streamlit/streamlit/issues/2609
+                )
+
 with tab2:
-   st.header("A dog")
-   st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
+  st.header("👩‍💼👨‍💼 ASRS admins' workspace")
 
-st.markdown("""               
-            We show for each model, a boxplot of the difference in f1-score with respect to the baseline model, for all 13 key anomalies
-            """)
+  st.markdown("""
+          Welcome to your dashboard, dear ASRS administrator!
+          
+          _Dont' know in which technology to invest for improving the narrative classification process at NASA ?_
+          
+          Here you can identify which models are _polyvalent_ and which perform best, taking into account **all anomaly labels**.
+          """)
 
-highlight_best_models = st.checkbox('Highlight the best model of each approach')
-st.markdown("""
-            For a given approach, the 'best' model is defined as the one with the highest median. 
-            """)
+  st.markdown("""               
+              We show for each model, a boxplot of the difference in f1-score with respect to the baseline model, *for all 13 anomalies*
+              
+              For a given approach, the 'best' model is defined as the one with the highest median. 
+              """)
 
-with st.spinner('Plotting...'):
-  st.pyplot(
-    catplot_diff_allmodels(highlight_best_models).figure
-          )
+  highlight_best_models = st.checkbox('Highlight the best model of each approach')
 
-st.markdown("""
-            Our criterion for polyvalence reads as follows: 
-            """)
-
-st.latex(r'''
-    \begin{equation*}
-    \begin{split}
-    &\text{model is polyvalent}
-    \\
-    &\Leftrightarrow \text{diff}_{\text{ f1-score}}^{\text{ model}}(\text{anomaly}) > 0 \quad \forall \text{ anomaly}
-    \\
-    &\Leftrightarrow \text{model boxplot on the right of the 0 red vertical line}
-    \end{split}
-    \end{equation*} 
-     ''')
-
-st.markdown("""
-            From all the models shown above, we summarize the best models of each modeling approach: 
-            """)
-
-with st.spinner('Plotting...'):
-  st.pyplot(
-            # catplot1()
-            catplot_diff_bestmodels().figure
+  with st.spinner('Plotting...'):
+    st.pyplot(
+      catplot_diff_allmodels(highlight_best_models).figure
             )
 
-st.markdown("""
-            ### Baseline model vs. best BERT model     
-            """)          
+  st.markdown("""
+              Our criterion for polyvalence reads as follows: 
+              """)
 
-# @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
-@st.cache(suppress_st_warning=True, allow_output_mutation=True)
-def plot_baseline_vs_BERT(df, metric):
-  fig = plt.figure(figsize = (15,10))
-  palette = sns.color_palette(["#962c61", "#766d6b"]) #gray: 766d6b, "#16a3e0",
+  st.latex(r'''
+      \begin{equation*}
+      \begin{split}
+      &\text{model is polyvalent}
+      \\
+      &\Leftrightarrow \text{diff}_{\text{ f1-score}}^{\text{ model}}(\text{anomaly}) > 0 \quad \forall \text{ anomaly}
+      \\
+      &\Leftrightarrow \text{model boxplot on the right of the 0 red vertical line}
+      \end{split}
+      \end{equation*} 
+      ''')
 
-  df_for_barplot = df[(df['metric'] == metric)]
-  b = sns.barplot(data = df_for_barplot, x = '1', y = 'anomaly', 
-                  hue = 'model_label',
-                  palette = palette)
+  st.markdown("""
+              From all the models shown above, we group together the best models of each modeling approach: 
+              """)
 
-  # Bert
-  df_temp1 = df_for_barplot[df_for_barplot['model_label'] == 'best transformer']
-  for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
-    plt.text(v+0.005, i-.05,           
-            str(np.round(100*v,1))+'%', 
-            color="#962c61", 
-            va='baseline', 
-            fontweight='bold',
-            fontsize = 13)
-    
-  # Baseline
-  df_temp1 = df_for_barplot[df_for_barplot['model_label'] == 'baseline model (DT)']
-  for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
-    plt.text(v+0.005, i+.1,       
-            str(np.round(100*v,1))+'%', 
-            color="#766d6b", 
-            va='top', 
-            fontweight='bold',
-            fontsize = 13)
+  with st.spinner('Plotting...'):
+    st.pyplot(
+              # catplot1()
+              catplot_diff_bestmodels().figure
+              )
 
-  plt.rcParams['axes.titlesize'] = 23
-  plt.rcParams['axes.labelsize'] = 23
-  plt.rcParams['ytick.labelsize'] = 23
-  plt.rc('legend', fontsize=20)    # legend fontsize
+  st.markdown("""
+              We see that models the best models from the approaches
+              - (3) BoW Supervised feat. selection 
+              - (4) Word-Embedding
+              - (5) BERT Unfrozen
+              are polyvalent. 
+              
+              The latter, with the highest median, yields the best performance.
+            """)
 
-  b.legend_.set_title(None)
-  plt.legend(loc='lower right')
-  # b.legend().set_visible(False)
-  plt.xlim([0,1])
-  plt.xticks([])
-  plt.xlabel(metric)
-  plt.title(f'Baseline (DT) vs. best transformer model (BERT), metric: {metric}')
 
-  return fig
+  st.markdown("""
+              ### Interpretability vs. performance
+              Below, we compare the _f1-score_ as obtained from the Baseline (DT) vs. from the best transformer model (BERT), 
+              for all anomaly labels. 
+              """)          
 
-with st.spinner('Plotting...'):
-  st.pyplot(plot_baseline_vs_BERT(base_line_vs_BERT_results[base_line_vs_BERT_results['anomaly'] != '14_No Specific Anomaly Occurred'], 
-            'f1-score'))
+  # @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
+  @st.cache(suppress_st_warning=True, allow_output_mutation=True)
+  def plot_baseline_vs_BERT(df, metric):
+    fig = plt.figure(figsize = (15,10))
+    palette = sns.color_palette(["#962c61", "#766d6b"]) #gray: 766d6b, "#16a3e0",
 
-st.success('Page refresh successful.')
+    df_for_barplot = df[(df['metric'] == metric)]
+    b = sns.barplot(data = df_for_barplot, x = '1', y = 'anomaly', 
+                    hue = 'model_label',
+                    palette = palette)
+
+    # Bert
+    df_temp1 = df_for_barplot[df_for_barplot['model_label'] == 'best transformer']
+    for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
+      plt.text(v+0.005, i-.05,           
+              str(np.round(100*v,1))+'%', 
+              color="#962c61", 
+              va='baseline', 
+              fontweight='bold',
+              fontsize = 13)
+      
+    # Baseline
+    df_temp1 = df_for_barplot[df_for_barplot['model_label'] == 'baseline model (DT)']
+    for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
+      plt.text(v+0.005, i+.1,       
+              str(np.round(100*v,1))+'%', 
+              color="#766d6b", 
+              va='top', 
+              fontweight='bold',
+              fontsize = 13)
+
+    plt.rcParams['axes.titlesize'] = 23
+    plt.rcParams['axes.labelsize'] = 23
+    plt.rcParams['ytick.labelsize'] = 23
+    plt.rc('legend', fontsize=20)    # legend fontsize
+
+    b.legend_.set_title(None)
+    plt.legend(loc='lower right')
+    # b.legend().set_visible(False)
+    plt.xlim([0,1])
+    plt.xticks([])
+    plt.xlabel(metric)
+    plt.title(f'Baseline (DT) vs. best transformer model (BERT), metric: {metric}')
+
+    return fig
+
+  with st.spinner('Plotting...'):
+    st.pyplot(plot_baseline_vs_BERT(base_line_vs_BERT_results[base_line_vs_BERT_results['anomaly'] != '14_No Specific Anomaly Occurred'], 
+              'f1-score'))
+
+  st.success('Page refresh successful.')
