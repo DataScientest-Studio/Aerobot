@@ -1314,7 +1314,8 @@ def train_load_transformer_model(dir_name, experiment_name,
   ------- 
   None; this function saves data externally 
   """
-  experiment_dir = dir_name + experiment_name
+#   experiment_dir = dir_name + experiment_name
+  experiment_dir = dir_name.joinpath(experiment_name)
 
   if train_mode == True:
 
