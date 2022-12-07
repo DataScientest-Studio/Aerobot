@@ -6,6 +6,7 @@ import gdown
 import pickle as pkl
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import seaborn as sns
 from pathlib import Path  
 
@@ -59,6 +60,7 @@ def plot_diff_metric_universal(df_model_results,
     metric_row=metric
     if modality_col == 'absolute': 
       title_ToPlot=anomaly_label+" :\n" + metric
+
     else:      
       title_ToPlot=anomaly_label+" :\n  Difference of "+ metric+" vs. Baseline model "
 
@@ -131,123 +133,96 @@ def plot_diff_metric_universal(df_model_results,
                   va='center', 
                   fontweight='bold')
     plt.ylabel("Approach and Model number", fontsize = 14)
+    
+    if modality_col == 'absolute': 
+      barh.set_xlabel('f1-score', fontsize = 16)
+    
+    else: 
+      barh.set_xlabel(r'$diff^{ model}_{ f1-score} (anomaly) $', fontsize = 16)
+
 
   return barh
+####################################################################
+def catplot_diff_allmodels(highlight_best_models=False):
 
-# def plot_diff_metric_universal(df_model_results, 
-#                                modality_col,
-#                                anomaly_list=[], 
-#                                metric="f1-score", 
-#                                dict_model_color={}
-#                                ):
-#     """
-#     Plots, for each anomaly, the evolution of  "metric" 
-#     Inputs: 
-#     - model_results : a df containing the classification report metrics of our different "models" to plot
-#       Models include : classifier type and modeling options such as  raw/PP narratives, std or under sampling, count_vectorizer options
-#     - a list of anomaly features : if the list is empty : 
-#     - metric : one of the model results metrics : "precision", "recall", "f1-score" or "support"
-#     - dict_color : dictionnary defining a color for each type of model listed (grey if non listed)
-    
-#     Returns:
-#     - 1 plot per anomaly listed
-#       - for models using undersampling, the line  of the rectangle is thiner
-#       - for models using raw narratives (vs PP), the line  of the rectangle is grey instead of black
+  color_approach_model_list=['#595959' ]+[ '#16a3e0' ]* 14 +['#0d5ddf'] + ['#962c61']*15 +[ '#766d6b'] *5+ ['#f14124']*5 
+  color_ticks_approach_model_list=color_approach_model_list
+  if highlight_best_models:
+    color_approach_model_list=['#595959' ]+[ 'w' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ 'w' ] *14 +[ 'w']+[ '#766d6b']+[ 'w'] *3+ ['#f14124']+[ 'w' ] *4 
+    color_ticks_approach_model_list=['#595959' ]+[ '#d3d3d3' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ '#d3d3d3' ] *14 +[ '#d3d3d3']+[ '#766d6b']+[ '#d3d3d3'] *3+ ['#f14124']+[ '#d3d3d3' ] *4 
 
-#     """
-#     if anomaly_list == [] :
-#       anomaly_list = df_model_results['anomaly'].unique().tolist()
-#     for anomaly in anomaly_list :
-  
-#       # Anomaly_label without the prefix "Anomaly_"
-#       anomaly_label=anomaly.replace("Anomaly_", "")  
-      
-#       metric_row=metric
-#       if modality_col == 'absolute': 
-#         title_ToPlot=anomaly_label+" :\n" + metric
-#       else:      
-#         title_ToPlot=anomaly_label+" :\n  Difference of "+ metric+" vs. Baseline model "
+  approach_model_palette=sns.color_palette(color_approach_model_list)
 
-#       # dataframe containing only the rows to plot
-#       sub_df = df_model_results[(df_model_results['anomaly'] == anomaly) & (df_model_results['metric'] == metric_row)].copy()
-#       # label of the model , including options
-#       sub_df=sub_df.set_index('model_label')
-#       # defining color, edgecolot, linewidth of the bar according to the model characteristics
-#       sub_df['color']=sub_df['classifier'].apply(lambda x: dict_model_color[x] if x in list(dict_model_color.keys()) else 'grey')
-#       sub_df['edgecolor']=sub_df['preprocessing'].apply(lambda x: 'grey' if x==0 else 'black')
-#       sub_df['linewidth']=sub_df['undersampling'].apply(lambda x: 3 if x==0 else 1)
-      
-#       # Plot
-#       fig = plt.figure()
-#       plt.style.use('ggplot')
-#       plt.rcParams['axes.titlesize'] = 15
-#       plt.rcParams['axes.labelsize'] = 10
-#       plt.rcParams['xtick.labelsize'] = 10
-#       plt.rcParams['ytick.labelsize'] = 13
-#       plt.rc('legend', fontsize=10)    # legend fontsize
+  boxplot = plt.figure()
+  boxplot = plt.figure(figsize= (10, 12))
+  # sns.set(rc={'figure.figsize':(10,12)})
+  sns.set(font_scale = 1.1)
+  boxplot=sns.boxplot(data=model_results_diffBLM_bestmodel[(model_results_diffBLM_bestmodel['metric']=='f1-score')&(model_results_diffBLM_bestmodel['anomaly']!='Anomaly_No Specific Anomaly Occurred')],
+              y='approach and model number',
+              x='diff',
+              #kind ='box',
+              orient='h',
+            #  height=8, 
+              palette=approach_model_palette)
 
-      
-#       num_classes = len(sub_df)
-#       fig_shape=(8,num_classes//4)
+  # ytick labels in color : according to approach + highlight_best_models
+  for ytick, color in zip(boxplot.get_yticklabels(), color_ticks_approach_model_list):
+    ytick.set_color(color)
 
-#       colors=list(sub_df['color'])
-#       edgecolors=list(sub_df['edgecolor'])
-#       linewidths=list(sub_df['linewidth'])
-#       iter_color = iter(colors)
+  # Limits min/max of x-axis
+  boxplot.set(xlim=(-0.8, 0.4))
 
-#       sub_df[modality_col].plot.barh(title=title_ToPlot, 
-#                                                       ylabel="Topics",
-#                                                       color=colors,
-#                                                       edgecolor=edgecolors,
-#                                                       linewidth=linewidths,
-#                                                       figsize=fig_shape) # indicative value for BERT models only: (8,7)
-#       if metric != "support":
-#         if modality_col == 'absolute': 
-#           plt.xlim([0, 1])
-#         else:
-#           plt.xlim([-1,1])
-#         plt.xticks([])
-#         for i, v in enumerate(sub_df[modality_col]):
-#           c = next(iter_color)
-#           if v>=0 :
-#             y=v
-#           else :
-#             y=v-0.2
-#           plt.text(y, i,           # si bar au lieu de barh : inverser v et i
-#                    " "+str(round(v*100,1))+"%", 
-#                     color=c, 
-#                     va='center', 
-#                     fontweight='bold')
+  # Titles
+  #boxplot.set_xlabel("diff_f1_score", fontsize = 16)
+  # boxplot.set_xlabel('$\t{​diff}​_{​\t{​ f1-score}​}​^{​\t{​ model}​}​$', fontsize = 16)
+  boxplot.set_xlabel(r'$diff^{ model}_{ f1-score}$ (all anomalies)', fontsize = 16)
+  boxplot.set_ylabel("Approach and Model number", fontsize = 16)
+  boxplot.set_title("Difference of f1-score vs Baseline model", fontsize = 18, weight='bold')
 
-#       else : 
-#           for i, v in enumerate(sub_df[modality_col]):
-#             c = next(iter_color)
-#             plt.text(v, i,           # si bar au lieu de barh : inverser v et i
-#                     " "+str(int(v)), 
-#                     color=c, 
-#                     va='center', 
-#                     fontweight='bold')
+  ## Les 2 lignes en LateX ci-dessous ne marchent pas ...
+  #boxplot.set(xlabel=r'$\text{​​​​​​diff}​​​​​​_{​​​​​​\text{​​​​​​ f1-score}​​​​​​}​​​​​​^{​​​​​​\text{​​​​​​ model}​​​​​​}​​​​​​$ [s]')
+  #boxplot.set(xlabel=r'$\text{​diff}​_{​\text{​ f1-score}​}​^{​\text{​ model}​}​$')
 
-#     print(modality_col)
-#     return fig
+  # Vertical bar in black
+  boxplot.axvline(0, ls='-',color='black',linewidth=2)
+
+  return boxplot
 ###################################################################
-# Definition of color coding for each model type (grey otherwise in function)
-dict_model_color={'Decision Tree':'#15B01A' , 
-            'DecisionTreeClassifier':'#15B01A' , 
-            'Decision Tree (Grid)':'#e69138' , 
-            'Random Forest':'#008080' , 
-            'RandomForestClassifier':'#008080' , 
-            'Random Forest (Grid)':'#e69138' , 
-            'naive bayes':'#674ea7' , 
-            'Gradient Boosting':'#16a3e0' , 
-            'Gradient Boosting (Grid)':'#e69138' , 
-            'SVM':'#162d5a' ,
-            'Word_Embedding':'#962c61',
-          #  'BERT_BASE': '#f14124',
-            'BERT_BASE UNFROZEN': '#f14124',
-            'BERT_BASE FROZEN': '#766d6b',
-            }
+def catplot_diff_bestmodels():
+  # FOCUS ON BEST MODELS FOR EACH APPROACH
+  color_approach_list=['#595959',  '#16a3e0', '#0d5ddf', '#962c61', '#766d6b', '#f14124' ]
+  approach_palette=sns.color_palette(color_approach_list)
 
+  boxplot = plt.figure(figsize= (10, 3))
+  # sns.set(rc={'figure.figsize':(10,3)})
+  sns.set(font_scale = 1.1)
+  boxplot=sns.boxplot(data=model_results_diffBLM_bestmodel[(model_results_diffBLM_bestmodel['metric']=='f1-score') \
+                                                  &(model_results_diffBLM_bestmodel['Best approach model']==True) \
+                                                  &(model_results_diffBLM_bestmodel['anomaly']!='Anomaly_No Specific Anomaly Occurred')], \
+                      y='approach and model number',
+                      x='diff' ,
+                      orient='h', 
+                      palette=approach_palette)
+  
+  # ytick labels in color : according to approach + highlight_best_models
+  for ytick, color in zip(boxplot.get_yticklabels(), color_approach_list):
+      ytick.set_color(color)
+
+  # Limits min/max of x-axis
+  boxplot.set(xlim=(-0.8, 0.4))
+  
+  # Titles
+  #boxplot.set_xlabel("diff_f1_score", fontsize = 14)
+  boxplot.set_xlabel(r'$diff^{ model}_{ f1-score}$ (all anomalies)', fontsize = 16)
+  boxplot.set_ylabel("Approach and Model number", fontsize = 14)
+  boxplot.set_title("Difference of f1-score vs Baseline model \n Best model by approach", fontsize = 18, weight='bold')
+ 
+  # Vertical bar in black
+  boxplot.axvline(0, ls='-',color='black',linewidth=2)
+
+  return boxplot
+
+####################################################################
 # Definition of color coding for each model type (grey otherwise in function)
 dict_approach_color={'(1) Base line model':'#595959', 
             '(2) BoW Unsupervised feat. selection':'#16a3e0',
@@ -306,13 +281,7 @@ approaches_to_plot = st.multiselect(
     model_approaches,
     model_approaches)
 
-abs_or_rel = st.radio(
-    'Select how to plot the scores:',
-    ('Absolute values', 'Difference with respect to baseline model (DT)'))
-if abs_or_rel == 'Difference with respect to baseline model (DT)':
-  modality_col = 'diff'
-else:
-  modality_col = 'absolute'
+highlight_best_models = False # global variable
 
 # I THOUGHT THIS WOULD SPEED UP THE PLOTTING, BUT RUNNING create_anomaly_figs_dict() takes ages
 # @st.cache
@@ -330,20 +299,20 @@ else:
 st.markdown("""
             The plot below shows 
             - either the absolute value of the _f1-score_ 
-            - or the difference in _f1-score_ with respect to the baseline model, for the models in the selected model approaches :
+            - or the difference in _f1-score_ with respect to the baseline model, for the models in the selected model approaches (see equation below). In this case positive and negative values illustrate the over- and underperformance of the model, respectively. 
             """)
 
 st.latex(r'''
     \text{diff}_{\text{ f1-score}}^{\text{ model}} (\text{anomaly}) = \text{f1-score}^{\text{ model}} (\text{anomaly}) - \text{f1-score}^{\text{ baseline}} (\text{anomaly})
     ''')
-
-# with st.spinner('Plotting...'):
-#   st.pyplot(plot_diff_metric_universal(model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
-#                                                     modality_col,
-#                                                     anomaly_list=[anomaly],
-#                                                     metric="f1-score",
-#                                                     dict_model_color=dict_model_color)
-#                                                     )
+    
+abs_or_rel = st.radio(
+    'Select how to plot the scores:',
+    ('Absolute values', 'Difference with respect to baseline model (DT)'))
+if abs_or_rel == 'Difference with respect to baseline model (DT)':
+  modality_col = 'diff'
+else:
+  modality_col = 'absolute'
 
 with st.spinner('Plotting...'):
   st.pyplot(plot_diff_metric_universal(df_model_results = model_results_diffBLM_bestmodel[model_results_diffBLM_bestmodel['approach'].isin(approaches_to_plot)].sort_values(by = ['import_order'], ascending = False),
@@ -354,10 +323,6 @@ with st.spinner('Plotting...'):
                       color_by='approach',
                       model_name='approach and model number').figure # see https://github.com/streamlit/streamlit/issues/2609
             )
-
-st.markdown("""
-            Positive and negative values illustrate the over- and underperformance of the model, respectively. 
-            """)
             
 with tab2:
    st.header("A dog")
@@ -366,14 +331,15 @@ with tab2:
 st.markdown("""               
             We show for each model, a boxplot of the difference in f1-score with respect to the baseline model, for all 13 key anomalies
             """)
+
+highlight_best_models = st.checkbox('Highlight the best model of each approach')
+st.markdown("""
+            For a given approach, the 'best' model is defined as the one with the highest median. 
+            """)
+
 with st.spinner('Plotting...'):
   st.pyplot(
-    sns.catplot(data=model_results_diffBLM_bestmodel[(model_results_diffBLM_bestmodel['metric']=='f1-score')&(model_results_diffBLM_bestmodel['anomaly']!='Anomaly_No Specific Anomaly Occurred')],
-                y='model_label',
-                x='1',
-                kind ='box',
-                orient='h',
-                height=8)
+    catplot_diff_allmodels(highlight_best_models).figure
           )
 
 st.markdown("""
@@ -391,33 +357,20 @@ st.latex(r'''
     \end{split}
     \end{equation*} 
      ''')
-    
 
 st.markdown("""
             From all the models shown above, we summarize the best models of each modeling approach: 
             """)
-# Catplot
-# @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
-@st.cache(suppress_st_warning=True, allow_output_mutation=True)
-def catplot1():
-  return     sns.catplot(data=model_results_diffBLM_bestmodel[(model_results_diffBLM_bestmodel['metric']=='f1-score') \
-                                                    &(model_results_diffBLM_bestmodel['model_label'].isin(['Decision Tree/Raw/Std sampling/' \
-                                                            , 'naive bayes_tfidfvectorizer_vocab_size:3000_PP'
-                                                            ,'Best BoW Supervised feature selection Model'
-                                                            ,'Word_Embedding/PP/Std sampling/'
-                                                            ,'7_5_4_2_BERT_BASE_raw_FROZEN_concat_layers_NO_layer_11_flattened'
-                                                            ,'7_3_9_3_BERT_BASE_raw_UNfrozen_layers_9_10_11_12_concat_layers_NO_last_hidden_state_CLS'])) \
-                      
-                                                    &(model_results_diffBLM_bestmodel['anomaly']!='14_No Specific Anomaly Occurred')] \
-                ,y='model_label',x='1',kind ='box' ,orient='h',height=8)
 
 with st.spinner('Plotting...'):
-  st.pyplot(catplot1())
+  st.pyplot(
+            # catplot1()
+            catplot_diff_bestmodels().figure
+            )
 
 st.markdown("""
             ### Baseline model vs. best BERT model     
             """)          
-
 
 # @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
@@ -469,4 +422,4 @@ with st.spinner('Plotting...'):
   st.pyplot(plot_baseline_vs_BERT(base_line_vs_BERT_results[base_line_vs_BERT_results['anomaly'] != '14_No Specific Anomaly Occurred'], 
             'f1-score'))
 
-st.success('Page refreshed successfuly.')
+st.success('Page refresh successful.')
