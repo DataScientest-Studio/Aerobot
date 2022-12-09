@@ -10,7 +10,6 @@ from matplotlib import rcParams
 import seaborn as sns
 from pathlib import Path  
 
-
 st.set_page_config(page_title="AeroBOT Demo",
                   page_icon="✈") #🛩
 st.markdown("""
@@ -139,11 +138,11 @@ def plot_diff_metric_universal(df_model_results,
 ####################################################################
 def catplot_diff_allmodels(highlight_best_models=False):
 
-  color_approach_model_list=['#595959' ]+[ '#16a3e0' ]* 14 +['#0d5ddf'] + ['#962c61']*15 +[ '#766d6b'] *5+ ['#f14124']*5 
+  color_approach_model_list=['#6aa84f' ]+[ '#16a3e0' ]* 14 +['#0d5ddf'] + ['#962c61']*15 +[ '#766d6b'] *5+ ['#f14124']*5 
   color_ticks_approach_model_list=color_approach_model_list
   if highlight_best_models:
-    color_approach_model_list=['#595959' ]+[ 'w' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ 'w' ] *14 +[ 'w']+[ '#766d6b']+[ 'w'] *3+ ['#f14124']+[ 'w' ] *4 
-    color_ticks_approach_model_list=['#595959' ]+[ '#d3d3d3' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ '#d3d3d3' ] *14 +[ '#d3d3d3']+[ '#766d6b']+[ '#d3d3d3'] *3+ ['#f14124']+[ '#d3d3d3' ] *4 
+    color_approach_model_list=['#6aa84f' ]+[ 'w' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ 'w' ] *14 +[ 'w']+[ '#766d6b']+[ 'w'] *3+ ['#f14124']+[ 'w' ] *4 
+    color_ticks_approach_model_list=['#6aa84f' ]+[ '#d3d3d3' ]* 13+['#16a3e0'] +['#0d5ddf'] + ['#962c61'] +[ '#d3d3d3' ] *14 +[ '#d3d3d3']+[ '#766d6b']+[ '#d3d3d3'] *3+ ['#f14124']+[ '#d3d3d3' ] *4 
 
   approach_model_palette=sns.color_palette(color_approach_model_list)
 
@@ -184,7 +183,7 @@ def catplot_diff_allmodels(highlight_best_models=False):
 ###################################################################
 def catplot_diff_bestmodels():
   # FOCUS ON BEST MODELS FOR EACH APPROACH
-  color_approach_list=['#595959',  '#16a3e0', '#0d5ddf', '#962c61', '#766d6b', '#f14124' ]
+  color_approach_list=['#6aa84f',  '#16a3e0', '#0d5ddf', '#962c61', '#766d6b', '#f14124' ]
   approach_palette=sns.color_palette(color_approach_list)
 
   boxplot = plt.figure(figsize= (10, 3))
@@ -218,7 +217,7 @@ def catplot_diff_bestmodels():
 
 ####################################################################
 # Definition of color coding for each model type (grey otherwise in function)
-dict_approach_color={'(1) Base line model':'#595959', 
+dict_approach_color={'(1) Base line model':'#6aa84f', 
             '(2) BoW Unsupervised feat. selection':'#16a3e0',
             '(3) BoW Supervised feat. selection':'#0d5ddf',
             '(4) Word-Embedding':'#962c61',
@@ -329,6 +328,24 @@ with tab1:
                           color_by='approach',
                           model_name='approach and model number').figure # see https://github.com/streamlit/streamlit/issues/2609
                 )
+      
+
+      model_Nr = st.number_input('Insert a model number to see its details:',
+                                value = 5,
+                                min_value = model_results_diffBLM_bestmodel['import_order'].min(),
+                                max_value = model_results_diffBLM_bestmodel['import_order'].max(),
+                                step = 1)
+
+      # df_details = model_results_diffBLM_bestmodel#.set_index('import_order')
+      df_details = model_results_diffBLM_bestmodel.loc[(model_results_diffBLM_bestmodel['import_order'] == model_Nr) &
+                              (model_results_diffBLM_bestmodel['anomaly'] == 'Anomaly_Conflict') &
+                              (model_results_diffBLM_bestmodel['metric'] == 'f1-score'), ['import_order', 'model_label']]
+      df_details.rename(columns = {'import_order': 'model#', 
+                                   'model_label': 'model details'}, 
+                        inplace = True)
+      # df_details = df_details.reindex(columns=['model_label'])
+      # st.write(df_details.columns)
+      st.write(df_details.loc[:, ['model#', 'model details']].reset_index(drop=True).set_index('model#'))
 
 with tab2:
   st.header("👩‍💼👨‍💼 ASRS admins' workspace")
@@ -340,6 +357,21 @@ with tab2:
           
           Here you can identify which models are _polyvalent_ and which perform best, taking into account **all anomaly labels**.
           """)
+  st.markdown("""
+                Our criterion for polyvalence reads as follows: 
+                """)
+
+  st.latex(r'''
+      \begin{equation*}
+      \begin{split}
+      &\text{model is } polyvalent
+      \\
+      &\Leftrightarrow \text{diff}_{\text{ f1-score}}^{\text{ model}}(\text{anomaly}) > 0 \quad \forall \text{ anomaly}
+      \\
+      &\Leftrightarrow \text{model boxplot on the right of the black vertical line}
+      \end{split}
+      \end{equation*} 
+      ''')
 
   st.markdown("""               
               We show for each model, a boxplot of the difference in f1-score with respect to the baseline model, *for all 13 anomalies*
@@ -353,22 +385,6 @@ with tab2:
     st.pyplot(
       catplot_diff_allmodels(highlight_best_models).figure
             )
-
-  st.markdown("""
-              Our criterion for polyvalence reads as follows: 
-              """)
-
-  st.latex(r'''
-      \begin{equation*}
-      \begin{split}
-      &\text{model is polyvalent}
-      \\
-      &\Leftrightarrow \text{diff}_{\text{ f1-score}}^{\text{ model}}(\text{anomaly}) > 0 \quad \forall \text{ anomaly}
-      \\
-      &\Leftrightarrow \text{model boxplot on the right of the 0 red vertical line}
-      \end{split}
-      \end{equation*} 
-      ''')
 
   st.markdown("""
               From all the models shown above, we group together the best models of each modeling approach: 
@@ -393,7 +409,7 @@ with tab2:
 
   st.markdown("""
               ### Interpretability vs. performance
-              Below, we compare the _f1-score_ as obtained from the Baseline (DT) vs. from the best transformer model (BERT), 
+              Below, we compare the _f1-score_ as obtained from the Baseline (DT) vs. from the best transformer model (BERT #93), 
               for all anomaly labels. 
               """)          
 
@@ -401,7 +417,7 @@ with tab2:
   @st.cache(suppress_st_warning=True, allow_output_mutation=True)
   def plot_baseline_vs_BERT(df, metric):
     fig = plt.figure(figsize = (15,10))
-    palette = sns.color_palette(["#962c61", "#766d6b"]) #gray: 766d6b, "#16a3e0",
+    palette = sns.color_palette(["#f14124", "#6aa84f"]) #gray: #595959, "#16a3e0" green: #6aa84f
 
     df_for_barplot = df[(df['metric'] == metric)]
     b = sns.barplot(data = df_for_barplot, x = '1', y = 'anomaly', 
@@ -413,7 +429,7 @@ with tab2:
     for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
       plt.text(v+0.005, i-.05,           
               str(np.round(100*v,1))+'%', 
-              color="#962c61", 
+              color="#f14124", 
               va='baseline', 
               fontweight='bold',
               fontsize = 13)
@@ -423,7 +439,7 @@ with tab2:
     for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
       plt.text(v+0.005, i+.1,       
               str(np.round(100*v,1))+'%', 
-              color="#766d6b", 
+              color="#6aa84f", 
               va='top', 
               fontweight='bold',
               fontsize = 13)
@@ -439,7 +455,7 @@ with tab2:
     plt.xlim([0,1])
     plt.xticks([])
     plt.xlabel(metric)
-    plt.title(f'Baseline (DT) vs. best transformer model (BERT), metric: {metric}')
+    plt.title(f'Baseline (DT) vs. best transformer model (BERT #93), metric: {metric}')
 
     return fig
 
