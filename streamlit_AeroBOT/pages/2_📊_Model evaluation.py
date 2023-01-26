@@ -17,6 +17,8 @@ st.markdown("""
           ### Choosing the best model for your work
           """)
 
+fig_bg_color = "#e8e3d4"
+
 ###############################################
 # EXPORT THIS INTO A PACKAGE
 # @st.cache(hash_funcs={matplotlib.figure.Figure: lambda _: None})
@@ -73,6 +75,7 @@ def plot_diff_metric_universal(df_model_results,
 
     # Plot
     fig = plt.figure()
+    fig.set_facecolor(fig_bg_color) 
     plt.style.use('ggplot')
     plt.rcParams['axes.titlesize'] = 15
     plt.rcParams['axes.labelsize'] = 10
@@ -147,6 +150,9 @@ def catplot_diff_allmodels(highlight_best_models=False):
   approach_model_palette=sns.color_palette(color_approach_model_list)
 
   boxplot = plt.figure()
+  boxplot.set_facecolor(fig_bg_color)
+  ax = plt.axes()
+  ax.set_facecolor("orange") 
   boxplot = plt.figure(figsize= (10, 12))
   # sns.set(rc={'figure.figsize':(10,12)})
   sns.set(font_scale = 1.1)
@@ -157,6 +163,7 @@ def catplot_diff_allmodels(highlight_best_models=False):
               orient='h',
             #  height=8, 
               palette=approach_model_palette)
+  boxplot.set_facecolor(fig_bg_color) 
 
   # ytick labels in color : according to approach + highlight_best_models
   for ytick, color in zip(boxplot.get_yticklabels(), color_ticks_approach_model_list):
@@ -171,7 +178,7 @@ def catplot_diff_allmodels(highlight_best_models=False):
   boxplot.set_xlabel(r'$diff^{ model}_{ f1-score}$ (all anomalies)', fontsize = 16)
   boxplot.set_ylabel("Approach and Model number", fontsize = 16)
   boxplot.set_title("Difference of f1-score vs Baseline model", fontsize = 18, weight='bold')
-
+  boxplot.set_facecolor(fig_bg_color)
   ## Les 2 lignes en LateX ci-dessous ne marchent pas ...
   #boxplot.set(xlabel=r'$\text{​​​​​​diff}​​​​​​_{​​​​​​\text{​​​​​​ f1-score}​​​​​​}​​​​​​^{​​​​​​\text{​​​​​​ model}​​​​​​}​​​​​​$ [s]')
   #boxplot.set(xlabel=r'$\text{​diff}​_{​\text{​ f1-score}​}​^{​\text{​ model}​}​$')
@@ -187,6 +194,7 @@ def catplot_diff_bestmodels():
   approach_palette=sns.color_palette(color_approach_list)
 
   boxplot = plt.figure(figsize= (10, 3))
+  boxplot.set_facecolor(fig_bg_color) 
   # sns.set(rc={'figure.figsize':(10,3)})
   sns.set(font_scale = 1.1)
   boxplot=sns.boxplot(data=model_results_diffBLM_bestmodel[(model_results_diffBLM_bestmodel['metric']=='f1-score') \
@@ -209,7 +217,7 @@ def catplot_diff_bestmodels():
   boxplot.set_xlabel(r'$diff^{ model}_{ f1-score}$ (all anomalies)', fontsize = 16)
   boxplot.set_ylabel("Approach and Model number", fontsize = 14)
   boxplot.set_title("Difference of f1-score vs Baseline model \n Best model by approach", fontsize = 18, weight='bold')
- 
+  boxplot.set_facecolor(fig_bg_color)
   # Vertical bar in black
   boxplot.axvline(0, ls='-',color='black',linewidth=2)
 
@@ -417,13 +425,15 @@ with tab2:
   @st.cache(suppress_st_warning=True, allow_output_mutation=True)
   def plot_baseline_vs_BERT(df, metric):
     fig = plt.figure(figsize = (15,10))
+    fig.set_facecolor(fig_bg_color) 
     palette = sns.color_palette(["#f14124", "#6aa84f"]) #gray: #595959, "#16a3e0" green: #6aa84f
 
     df_for_barplot = df[(df['metric'] == metric)]
     b = sns.barplot(data = df_for_barplot, x = '1', y = 'anomaly', 
                     hue = 'model_label',
                     palette = palette)
-
+    b.set_facecolor(fig_bg_color)
+  
     # Bert
     df_temp1 = df_for_barplot[df_for_barplot['model_label'] == 'best transformer']
     for i, v in zip(range(len(df_temp1['anomaly'])), df_temp1['1']):
@@ -450,6 +460,7 @@ with tab2:
     plt.rc('legend', fontsize=20)    # legend fontsize
 
     b.legend_.set_title(None)
+    b.set_facecolor(fig_bg_color)
     plt.legend(loc='lower right')
     # b.legend().set_visible(False)
     plt.xlim([0,1])
@@ -462,5 +473,3 @@ with tab2:
   with st.spinner('Plotting...'):
     st.pyplot(plot_baseline_vs_BERT(base_line_vs_BERT_results[base_line_vs_BERT_results['anomaly'] != '14_No Specific Anomaly Occurred'], 
               'f1-score'))
-
-  st.success('Page refresh successful.')
