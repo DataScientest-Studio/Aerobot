@@ -13,13 +13,13 @@ st.markdown("""
 st.header("🏝A weekend trip to the Bahamas") # 😎
 
 # Define colors and labels for expressions, contractions
-expr = {"color": "#F9CB5E", # DST orange
+expr = {"color": "#26DBE0", # DST cyan
         "font_color":  "#000000"} 
 
 contr = {"color": "#4529DE",# DST blue
           "font_color": "#FFFFFF"} 
 
-num = {"color": "#A329DE",# DST cyan
+num = {"color": "#A329DE",# DST violet
           "font_color": "#FFFFFF"} 
     
 #000000 black
@@ -31,7 +31,13 @@ num = {"color": "#A329DE",# DST cyan
 
 
 st.write("We show an example narrative, where **a pilot describes how he landed on \
-            a taxiway instead of the runway (cf. highlighted text).**")
+            a taxiway\* instead of the runway (cf. highlighted text).**")
+st.markdown("""
+<style>
+.small-font {font-size:12px ;}
+</style>
+<em class="small-font">*taxiways are the 'roads' of an airport that airplanes use on the ground </em>
+""", unsafe_allow_html=True)
 
 st.write("You can visualize the narrative either:")
 annotated_text("- in its original form")
@@ -152,63 +158,66 @@ else:
     "DOES OCCUR FREQUENTLY.")
 st.write(" ") # placeholder
 
-st.markdown("""##### Can you find the label(s) assigned to this narrative?
-            """)
-st.write("Hint: 'ATC' means 'Air Traffic Control'")
 
-anomaly_tuple = (
-    '01 Deviation / Discrepancy - Procedural',
-    '02 Aircraft Equipment',
-    '03 Conflict',
-    '04 Inflight Event / Encounter',
-    '05 ATC Issue',
-    '06 Deviation - Altitude',
-    '07 Deviation - Track / Heading',
-    '08 Ground Event / Encounter',
-    '09 Flight Deck / Cabin / Aircraft Event',
-    '10 Ground Incursion',
-    '11 Airspace Violation',
-    '12 Deviation - Speed',
-    '13 Ground Excursion',
-    '14 No Specific Anomaly Occurred'
-    )
+with st.expander("Click to play a game..."):
+  st.markdown("""##### Can you find the label(s) assigned to this narrative?
+              """)
+  st.write("Hint: 'ATC' means 'Air Traffic Control'")
 
-wrong_icon_list = ["🙃", "🙈", "👻", "😝", "😔", "🤕", "😕", "😞", "💩"]
-chkboxlist1 = []
-chkboxlist2 = []
-chkbox01 = st.checkbox(anomaly_tuple[0])
-if chkbox01:
-      st.success("Correct! Landing on the taxiway is an obvious deviation from the normal procedure, isn't it? ", icon="✅")
-for i, label in enumerate(anomaly_tuple[1:9]):
-  chkboxlist1.append(st.checkbox(label)) 
-  if chkboxlist1[i]:
+  anomaly_tuple = (
+      '01 Deviation / Discrepancy - Procedural',
+      '02 Aircraft Equipment',
+      '03 Conflict',
+      '04 Inflight Event / Encounter',
+      '05 ATC Issue',
+      '06 Deviation - Altitude',
+      '07 Deviation - Track / Heading',
+      '08 Ground Event / Encounter',
+      '09 Flight Deck / Cabin / Aircraft Event',
+      '10 Ground Incursion',
+      '11 Airspace Violation',
+      '12 Deviation - Speed',
+      '13 Ground Excursion',
+      '14 No Specific Anomaly Occurred'
+      )
+
+  wrong_icon_list = ["🙃", "🙈", "👻", "😝", "😔", "🤕", "😕", "😞", "💩"]
+  chkboxlist1 = []
+  chkboxlist2 = []
+  chkbox01 = st.checkbox(anomaly_tuple[0])
+  if chkbox01:
+        st.success("Correct! Landing on the taxiway is an obvious deviation from the normal procedure, isn't it? ", icon="✅")
+  for i, label in enumerate(anomaly_tuple[1:9]):
+    chkboxlist1.append(st.checkbox(label)) 
+    if chkboxlist1[i]:
+        st.error('This is wrong.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
+  chkbox10 = st.checkbox(anomaly_tuple[9])
+  if chkbox10:
+        st.success('Correct! A ground *incursion* occurs \
+          when an aircraft inadvertently touches the ground.', icon="✅")
+  for i, label in enumerate(anomaly_tuple[10:12]):
+    chkboxlist2.append(st.checkbox(label)) 
+    if chkboxlist2[i]:
+        st.error('This is wrong.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
+  chkbox13 = st.checkbox(anomaly_tuple[12])
+  if chkbox13:
+    st.error('This is wrong: A runway *excursion* \
+          is an incident, in which an aircraft leaves the runway \
+            surface / makes an inappropriate exit from the runway.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
+  chkbox14 = st.checkbox(anomaly_tuple[-1])
+  if chkbox14:
       st.error('This is wrong.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
-chkbox10 = st.checkbox(anomaly_tuple[9])
-if chkbox10:
-      st.success('Correct! A ground *incursion* occurs \
-        when an aircraft inadvertently touches the ground.', icon="✅")
-for i, label in enumerate(anomaly_tuple[10:12]):
-  chkboxlist2.append(st.checkbox(label)) 
-  if chkboxlist2[i]:
-      st.error('This is wrong.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
-chkbox13 = st.checkbox(anomaly_tuple[12])
-if chkbox13:
-  st.error('This is wrong: A runway *excursion* \
-         is an incident, in which an aircraft leaves the runway \
-          surface / makes an inappropriate exit from the runway.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
-chkbox14 = st.checkbox(anomaly_tuple[-1])
-if chkbox14:
-    st.error('This is wrong.', icon=wrong_icon_list[np.random.randint(0, len(wrong_icon_list))])
 
-if chkbox01 + chkbox10 == 1:
-  st.warning("Well done; but that's not all...", icon="👍")
-elif chkbox01 + chkbox10 == 2:
-  st.success("Bravo! You have found the 2 labels assigned to this narrative!", icon="🤩")
-elif chkbox01 + chkbox10 == 0 and (sum(chkboxlist1) + sum(chkboxlist2) + chkbox13 + chkbox14) != 0:
-  st.warning("Keep searching...", icon = "🧐")
+  if chkbox01 + chkbox10 == 1:
+    st.warning("Well done; but that's not all...", icon="👍")
+  elif chkbox01 + chkbox10 == 2:
+    st.success("Bravo! You have found the 2 labels assigned to this narrative!", icon="🤩")
+    st.balloons()
+  elif chkbox01 + chkbox10 == 0 and (sum(chkboxlist1) + sum(chkboxlist2) + chkbox13 + chkbox14) != 0:
+    st.warning("Keep searching...", icon = "🧐")
 
-if (sum(chkboxlist1) + sum(chkboxlist2) + chkbox01 + chkbox10 + chkbox13 + chkbox14) == 0:
-  st.warning("C'mon, play the game! Just click on the boxes...", icon = "🥺")
+  if (sum(chkboxlist1) + sum(chkboxlist2) + chkbox01 + chkbox10 + chkbox13 + chkbox14) == 0:
+    st.warning("C'mon, play the game! Just click on the boxes...", icon = "🥺")
 
 st.markdown("#### Narrative preprocessing into 3 forms ")
 st.write("We pre-process the narratives to keep the following 3 \
@@ -242,7 +251,11 @@ st.markdown("""
         <em>
         'near', 'complet', 
         &nbsp
-        <span style="background-color:#F9CB5E";>'instrument', 'flight', 'rule',</span> 
+        <span style="background-color:#F9CB5E";>'instrument'</span> 
+        ,&nbsp
+        <span style="background-color:#F9CB5E";>'flight'</span> 
+        ,&nbsp
+        <span style="background-color:#F9CB5E";>'rule'</span> 
         &nbsp
         <span style="background-color:#4529DE;color:#FFFFFF">'flt', </span>  
         &nbsp'plan', 'palm', 'beach', 
@@ -263,17 +276,18 @@ st.write(" ")# placeholder
 
 st.markdown("###### 3. 'TLP': NLP + specific Technical Language Preprocessing")
 st.markdown("""
-We replace in the following way:
-- Contractions : FLT ⇒ flight
-- Expressions : INSTRUMENT FLIGHT RULES ⇒ IFR
-and use RegEx to separate numbers in the case of quantitative information mixed with text (e.g. 'RWY13').
+In *addition* to the NLP preprocessing, we perform the following substitutions:
+- Contractions by their full-text form, e.g. 'FLT' ⇒ flight
+- Expressions by their acronyms, e.g. 'INSTRUMENT FLIGHT RULES' ⇒ IFR
+and use Regular Expressions (RegEx) to separate numbers in the case of quantitative information mixed with text (e.g. 'RWY13'), 
+which means ‘runway oriented at 130 degrees relative to the north', i.e. South East.
 """)
 st.markdown("""
         <body>
         <em>
         'near', 'complet', 
         &nbsp
-        <span style="background-color:#F9CB5E";>'fr',</span> 
+        <span style="background-color:#F9CB5E";>'ifr',</span> 
         &nbsp
         <span style="background-color:#4529DE;color:#FFFFFF">'flight', </span>  
         &nbsp'plan', 'palm', 'beach', 
@@ -285,7 +299,10 @@ st.markdown("""
         <span style="background-color:#4529DE;color:#FFFFFF">'clear', </span>  
         &nbsp
         'visual', 
-        <span style="background-color:#A329DE;color:#FFFFFF">'runway, 13'</span>
+        <span style="background-color:#A329DE;color:#FFFFFF">'runway'</span>
+        ,&nbsp  
+        <span style="background-color:#A329DE;color:#FFFFFF">'13'</span>
         </em>
         </body>
         """, unsafe_allow_html=True)
+  

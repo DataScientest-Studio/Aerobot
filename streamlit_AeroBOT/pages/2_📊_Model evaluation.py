@@ -363,7 +363,7 @@ with tab2:
           
           _Dont' know in which technology to invest for improving the narrative classification process at NASA ?_
           
-          Here you can identify which models are _polyvalent_ and which perform best, taking into account **all anomaly labels**.
+          Here you can identify which models are _versatile_ and which perform best, taking into account **all anomaly labels**.
           """)
   st.markdown("""
                 Our criterion for polyvalence reads as follows: 
@@ -372,7 +372,7 @@ with tab2:
   st.latex(r'''
       \begin{equation*}
       \begin{split}
-      &\text{model is } polyvalent
+      &\text{model is } versatile
       \\
       &\Leftrightarrow \text{diff}_{\text{ f1-score}}^{\text{ model}}(\text{anomaly}) > 0 \quad \forall \text{ anomaly}
       \\
@@ -409,7 +409,7 @@ with tab2:
               - (3) BoW Supervised feat. selection 
               - (4) Word-Embedding
               - (5) BERT Unfrozen
-              are polyvalent. 
+              are versatile. 
               
               The latter, with the highest median, yields the best performance.
             """)
