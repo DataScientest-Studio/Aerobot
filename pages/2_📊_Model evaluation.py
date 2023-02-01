@@ -238,7 +238,7 @@ dict_approach_color={'(1) Base line model':'#6aa84f',
 ##############################################
 # Define useful directories
 streamlit_root_dir = Path.cwd()
-AeroBOT_root_dir = streamlit_root_dir.parents[0]
+AeroBOT_root_dir = streamlit_root_dir #.parents[0] # comment out if streamlit main file in the GitHUB root 
 trans_data_path = AeroBOT_root_dir.joinpath('data', 'transformed')
 
 @st.cache
