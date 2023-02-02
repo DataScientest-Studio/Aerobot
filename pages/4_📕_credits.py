@@ -3,31 +3,31 @@ import os
 import base64
 import streamlit.components.v1 as components
 import inspect
-from pathlib import Path                 
+from pathlib import Path   
+import sys
+from PIL import Image
+streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))#.parents[0]
+)
+sys.path.append(streamlit_home_dir)
+from streamlitpackages import get_img_with_href              
 
 st.set_page_config(page_title="AeroBOT Demo",
                   page_icon="✈") #🛩
+
+
+img_planes_path = Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0].joinpath('ressources/airplanes2.jpeg')
+image = Image.open(img_planes_path)
+
+# Configure sidebar
+streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0])
+with st.sidebar:
+  st.image(image)
+
+
+
 st.markdown("# 📕 Credits")
 
-@st.cache(allow_output_mutation=True)
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-@st.cache(allow_output_mutation=True)
-def get_img_with_href(local_img_path, target_url, size=70):
-    img_format = os.path.splitext(local_img_path)[-1].replace('.', '')
-    bin_str = get_base64_of_bin_file(local_img_path)
-    html_code = f'''
-        <a href="{target_url}">
-            <img src="data:image/{img_format};base64,{bin_str}" height={size}px/>
-        </a>'''
-    return html_code
-
-
 def credits():
-
     streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0])
 
     logo_dataScientest = get_img_with_href(os.path.join(str(Path(streamlit_home_dir)), 'ressources/datascientestLogo_round.png'), 'https://datascientest.com/')

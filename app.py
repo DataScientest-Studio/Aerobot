@@ -2,34 +2,26 @@ import streamlit as st
 import os
 from pathlib import Path
 import inspect
-import base64
+# import base64
 from streamlit.logger import get_logger
+from streamlitpackages import get_img_with_href
 
 LOGGER = get_logger(__name__)
 
 st.set_page_config(page_title="AeroBOT Demo", page_icon="✈") #🛩
 
+# Configure sidebar
+streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))#.parents[0]
+)
+with st.sidebar:
+  st.header("Contact")
+  logo_linkedin = get_img_with_href(os.path.join(streamlit_home_dir, 'ressources/linkedin.png'), 'https://www.linkedin.com/in/ioannis-stasinopoulos/', 20)
+  st.write(f'''<a href="https://www.linkedin.com/in/ioannis-stasinopoulos/" style="text-decoration: none;color:black">Ioannis STASINOPOULOS</a> {logo_linkedin}''', unsafe_allow_html=True) 
+  st.write(f'''<a href="https://www.linkedin.com/in/heleneassir/" style="text-decoration: none;color:black">Hélène ASSIR</a> {logo_linkedin}''', unsafe_allow_html=True) 
+
+
 st.markdown('# Welcome to the AeroBOT demo ✈')
-
-@st.cache(allow_output_mutation=True)
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-@st.cache(allow_output_mutation=True)
-def get_img_with_href(local_img_path, target_url, size=50):
-    img_format = os.path.splitext(local_img_path)[-1].replace('.', '')
-    bin_str = get_base64_of_bin_file(local_img_path)
-    html_code = f'''
-        <a href="{target_url}">
-            <img src="data:image/{img_format};base64,{bin_str}" height={size}px/>
-        </a>'''
-    return html_code
-
-streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))))
 photo = get_img_with_href(os.path.join(streamlit_home_dir, 'ressources/airplanes2.jpeg'), 'https://commons.wikimedia.org/wiki/File:Lufthansa_Airbus_A380_and_Boeing_747_(16431502906).jpg', 380)
-
 st.markdown(
   """
   ## 🛫 Introduction

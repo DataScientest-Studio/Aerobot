@@ -2,16 +2,27 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import os
+from pathlib import Path
+import inspect
 import gdown
 import pickle as pkl
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import seaborn as sns
-from pathlib import Path  
+from streamlitpackages import get_img_with_href
+
 
 st.set_page_config(page_title="AeroBOT Demo",
                   page_icon="✈") #🛩
+# Configure sidebar
+streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0])
+with st.sidebar:
+  st.header("Contact")
+  logo_linkedin = get_img_with_href(os.path.join(streamlit_home_dir, 'ressources/linkedin.png'), 'https://www.linkedin.com/in/ioannis-stasinopoulos/', 20)
+  st.write(f'''<a href="https://www.linkedin.com/in/ioannis-stasinopoulos/" style="text-decoration: none;color:black">Ioannis STASINOPOULOS</a> {logo_linkedin}''', unsafe_allow_html=True) 
+  st.write(f'''<a href="https://www.linkedin.com/in/heleneassir/" style="text-decoration: none;color:black">Hélène ASSIR</a> {logo_linkedin}''', unsafe_allow_html=True) 
+
+
 st.markdown("""
           # 📊 Model Evaluation
           ### Choosing the best model for your work
