@@ -4,8 +4,7 @@ from pathlib import Path
 import inspect
 import numpy as np
 from annotated_text import annotated_text
-from streamlitpackages import get_img_with_href
-
+from streamlitpackages import get_img_with_href, get_image
 
 st.set_page_config(page_title="AeroBOT Demo",
                   page_icon="✈")
@@ -321,4 +320,35 @@ st.markdown("""
         </em>
         </body>
         """, unsafe_allow_html=True)
-  
+
+st.write(" ")# placeholder
+
+st.markdown("""#### Narrative length
+This figure shows the impact of the preprocessing on the narrative length. We see that it is marginal.
+
+We count the number of tokens in each narrative, after tokenization and stemming. 
+We superpose the histograms of the stemmed 'Original data' and the 'TLP'-preprocessed, stemmed narratives in blue and orange, respectively. 
+Given the slight transparency of the histograms and their almost perfect overlap, the result is gray. 
+Non-overlapping regions appear orange (some are visible near the peak) or blue (none is visible).
+  """)
+st.image(get_image(img_name = 'narrative_length.png'), 
+        width = 250,
+        caption='Impact of the preprocessing on the narrative length: it is marginal as shown by the overlap of the blue and orange semi-transparent bars, that yields gray.')
+
+st.markdown("""
+We deduce that we have performed mostly **substitutions** (e.g. ACFT → aircraft, FLT → flight) that did not affect the narrative length.
+Although we reduced terms such as ‘Flight Attendant’ to ‘FA’, this did not significantly impact the narrative length. Note: ‘Air Traffic Control’ was mostly found as ‘ATC’ in the first place.
+
+To support these statements, we now plot the top 15 tokens with most occurrences before and after preprocessing. 
+As we are looking at absolute frequency, the frequency of some tokens, e.g. ‘aircraft’ exceeds by far the corpus length.
+""")
+st.image(get_image(img_name = 'abs_frequ.png'), 
+        # width = 250,
+        caption='Top-15 tokens with the highest occurrence (absolute frequency, not document frequency) before (top) and after (bottom) preprocessing the narratives. The x-axis is scaled identically, for comparison. Note that the frequency exceeds by far the corpus length. The blue arrows point at the conversion of ‘acft’ in ‘aircraft’, reflected in the drastic increase of the latter’s counts in the bottom plot.')
+
+st.markdown("""
+We observe that 
+- ‘acft’ has been replaced by ‘aircraft’
+- ‘ft’ is replaced by ‘feet’
+- ‘rwi’ is the stemmed form of ‘rwy’. 
+""")

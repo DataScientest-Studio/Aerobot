@@ -2,9 +2,7 @@ import streamlit as st
 import os
 from pathlib import Path
 import inspect
-import numpy as np
-from annotated_text import annotated_text
-from streamlitpackages import get_img_with_href
+from streamlitpackages import get_img_with_href, get_image
 from PIL import Image
 
 st.set_page_config(page_title="AeroBOT Demo",
@@ -23,7 +21,6 @@ st.markdown("""
           ## bla bla
           """)
 
-img_path = Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0].joinpath('ressources/Model_table.png')
-image = Image.open(img_path)
-st.image(image, caption='Table summarizing our experimental protocol for each of the 5 main modelling approaches. \
-  Arrows in the vocabulary column denote that the vocabulary size was reduced down to the respective minimum value shown.')
+st.image(get_image(img_name = 'Model_table.png'), 
+        caption='Table summarizing our experimental protocol for each of the 5 main modelling approaches. \
+        Arrows in the vocabulary column denote that the vocabulary size was reduced down to the respective minimum value shown.')
