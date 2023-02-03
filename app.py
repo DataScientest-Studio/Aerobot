@@ -1,14 +1,18 @@
 import streamlit as st
+st.set_page_config( # `set_page_config()` can only be called once per app, and must be called as the first Streamlit command in your script.
+    page_title="AeroBOT demo",
+    page_icon="✈",  #🛩
+    # layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Report a bug': "https://github.com/DataScientest-Studio/Aerobot/issues",
+        'About': "# AeroBOT demo. This is an *extremely* cool app!"
+    }
+)
 import os
 from pathlib import Path
 import inspect
-# import base64
-from streamlit.logger import get_logger
 from streamlitpackages import get_img_with_href
-
-LOGGER = get_logger(__name__)
-
-st.set_page_config(page_title="AeroBOT Demo", page_icon="✈") #🛩
 
 # Configure sidebar
 streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))#.parents[0]

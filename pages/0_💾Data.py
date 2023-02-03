@@ -4,8 +4,8 @@ from pathlib import Path
 import inspect
 from streamlitpackages import get_img_with_href, get_image
 
-st.set_page_config(page_title="AeroBOT Demo",
-                  page_icon="✈")
+# st.set_page_config(page_title="AeroBOT Demo",
+#                   page_icon="✈")
 
 # Configure sidebar
 streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0])
