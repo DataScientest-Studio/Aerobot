@@ -1,7 +1,7 @@
 ##############################################
 # IMPORT PACKAGES
 ##############################################
-print("Importing packages...")
+print("Importing packages, please wait...")
 # Generic
 import os
 import argparse
@@ -26,6 +26,7 @@ download_from_GDrive(trans_data_path,
 download_from_GDrive(model_data_path, 
                     filename = 'model_11_3_3.zip', 
                     url = 'https://drive.google.com/uc?id=1qUGjWwJ9vLutgw_P-1Ax2Hl3DSm-7XGX')
+
 # Files for streamlit demo
 download_from_GDrive(trans_data_path, 
                     filename = 'model_results_diffBLM_bestmodel_20221207.csv', 
@@ -33,7 +34,11 @@ download_from_GDrive(trans_data_path,
                     
 download_from_GDrive(trans_data_path, 
                     filename = 'baseline_vs_best_BERT_20221207.csv', 
-                    url = 'https://drive.google.com/uc?id=1-5faJU71SZ_LbehLMwKddO_aeWk-e-rk')  
+                    url = 'https://drive.google.com/uc?id=1-5faJU71SZ_LbehLMwKddO_aeWk-e-rk')
+
+download_from_GDrive(trans_data_path, 
+                    filename = 'df_importances_20230203.csv', 
+                    url = 'https://drive.google.com/uc?id=1-9Ubh8KlXDKy3Q4C3rqR2UZb2zy-ubJJ')                    
 
 os.chdir(AeroBOT_root_dir) # make sure we return to the root directory of the repo
 

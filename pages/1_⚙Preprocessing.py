@@ -6,9 +6,6 @@ import numpy as np
 from annotated_text import annotated_text
 from streamlitpackages import get_img_with_href, get_image
 
-# st.set_page_config(page_title="AeroBOT Demo",
-#                   page_icon="✈")
-
 # Configure sidebar
 streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0])
 with st.sidebar:
@@ -324,7 +321,7 @@ st.markdown("""
 st.write(" ")# placeholder
 
 st.markdown("""#### Narrative length
-This figure shows the impact of the preprocessing on the narrative length. We see that it is marginal.
+The figure below shows the impact of the preprocessing on the narrative length. We see that it is marginal.
 
 We count the number of tokens in each narrative, after tokenization and stemming. 
 We superpose the histograms of the stemmed 'Original data' and the 'TLP'-preprocessed, stemmed narratives in blue and orange, respectively. 

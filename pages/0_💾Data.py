@@ -38,10 +38,10 @@ with tab1:
 
   """)
   st.image(get_image(img_name = 'ASRS_overview.png'), 
-          caption="Overview of the label categories on the ASRS database. The 'Text:Narrative' and ‘Event Type-Anomaly’ are the feature and target variable in AeroBOT project, respectively.")
+          caption="Snapshot of the ASRS Online search engine. The 'Text:Narrative' and ‘Event Type-Anomaly’ are the feature and target variable in AeroBOT project, respectively.")
 
   st.markdown("""### Data perimeter in AeroBOT
-  The figure below shows that the data in the ASRS database are mainly from the USA; there is a negligible amount of Canadian data. This is why we restricted the project to US data only.
+  The figure below shows that the data in the ASRS database are mainly from the USA; there is a negligible amount of Canadian data.
   We also observe a high ratio of geographically anonymized data and we do not observe a monotonous trend over time. 
 
   Possible interpretations include: 

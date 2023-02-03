@@ -11,10 +11,6 @@ streamlit_home_dir = str(Path(os.path.dirname(os.path.abspath(inspect.getfile(in
 sys.path.append(streamlit_home_dir)
 from streamlitpackages import get_img_with_href              
 
-# st.set_page_config(page_title="AeroBOT Demo",
-#                   page_icon="✈") #🛩
-
-
 img_planes_path = Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))).parents[0].joinpath('ressources/airplanes2.jpeg')
 image = Image.open(img_planes_path)
 

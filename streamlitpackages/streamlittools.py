@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from math import ceil
 
 # project-specific functions and classes created in the 'Aerobot' project by Ioannis STASINOPOULOS
 
@@ -49,6 +50,7 @@ def load_df(filename):
   os.chdir(streamlit_root_dir)
   print('Streamlit data loaded.')
   return df
+
 model_results_diffBLM_bestmodel = load_df('model_results_diffBLM_bestmodel_20221207.csv')
 
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
@@ -164,7 +166,6 @@ def plot_diff_metric_universal(df_model_results,
     
     else: 
       barh.set_xlabel(r'$diff^{ model}_{ f1-score} (anomaly) $', fontsize = 16)
-
 
   return barh
 
@@ -300,3 +301,52 @@ def plot_baseline_vs_BERT(df, metric):
 
     return fig
 #########################################################################################################
+
+# For Interpretability page
+
+def plot_feature_importance(anomalies_to_plot: list, df_importances: pd.DataFrame):
+  """
+  Generate a subplots figure with token importance for the anomalies in anomalies_to_plot
+  Note: The size of subplots adapts dynamically, depending on len(anomalies_to_plot)
+
+  Inputs
+  -------
+  - anomalies_to_plot: list of anomaly labels (strings)
+  - df_importances: pd.DataFrame containing the token importances as output from a Decision Tree;
+  see notebook 10_2
+
+  Return
+  -------
+  - matplotlib figure containing subplots
+
+  """
+  # Aux variables
+  N = len(anomalies_to_plot)
+  cols = 2
+  rows = ceil(N / cols)
+  
+  # Setup figure
+  fig = plt.figure(figsize=(10, 17))
+  plt.subplots_adjust(hspace=0.7)
+  plt.subplots_adjust(wspace=0.7)
+  plt.style.use('ggplot')
+  plt.rcParams['axes.titlesize'] = 10
+  plt.rcParams['axes.labelsize'] = 10
+  plt.rcParams['xtick.labelsize'] = 10
+  plt.rcParams['ytick.labelsize'] = 10
+
+  for i in range(N):
+    ax = plt.subplot(rows, cols, i+1) # select subplot
+    col_importance = 'Importance_Anomaly_' + anomalies_to_plot[i].split(sep = '_')[1]
+    topfeatures = df_importances.sort_values(by = col_importance, ascending = True).tail(10)
+    topfeatures = topfeatures.set_index('token')
+    topfeatures.plot.barh(ax = ax, y=[col_importance],
+                                color='#15B01A',
+                                legend=None,
+                                figsize=(7, 18*N/13) # dynamically adapt subplot size
+                                )#.figure
+    ax.set_title(anomalies_to_plot[i])
+    ax.set_xlabel('importance')
+    ax.set_ylabel('token')
+
+  return fig
