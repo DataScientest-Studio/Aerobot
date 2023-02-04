@@ -122,12 +122,12 @@ def plot_diff_metric_universal(df_model_results,
     linewidths=list(sub_df['linewidth'])
     iter_color = iter(colors)
 
-    barh=sub_df[modality_col].plot.barh(title=title_ToPlot, 
-                                                    ylabel="Topics",
-                                                    color=colors,
-                                                    edgecolor=edgecolors,
-                                                    linewidth=linewidths,
-                                                    figsize=fig_shape) # indicative value for BERT models only: (8,7)
+    barh = sub_df[modality_col].plot.barh(title=title_ToPlot, 
+                                          ylabel="Topics",
+                                          color=colors,
+                                          edgecolor=edgecolors,
+                                          linewidth=linewidths,
+                                          figsize=fig_shape) # indicative value for BERT models only: (8,7)
 
     # ytick labels in color : according to approach + highlight_best_models
     for ytick, color in zip(barh.get_yticklabels(), colors):

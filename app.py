@@ -23,6 +23,25 @@ with st.sidebar:
   st.write(f'''<a href="https://www.linkedin.com/in/ioannis-stasinopoulos/" style="text-decoration: none;color:black">Ioannis STASINOPOULOS</a> {logo_linkedin}''', unsafe_allow_html=True) 
   st.write(f'''<a href="https://www.linkedin.com/in/heleneassir/" style="text-decoration: none;color:black">Hélène ASSIR</a> {logo_linkedin}''', unsafe_allow_html=True) 
 
+# Declare variable in session state for sharing variable with other pages
+anomaly_tuple = (
+    '01_Deviation / Discrepancy - Procedural',
+    '02_Aircraft Equipment',
+    '03_Conflict',
+    '04_Inflight Event / Encounter',
+    '05_ATC Issue',
+    '06_Deviation - Altitude',
+    '07_Deviation - Track / Heading',
+    '08_Ground Event / Encounter',
+    '09_Flight Deck / Cabin / Aircraft Event',
+    '10_Ground Incursion',
+    '11_Airspace Violation',
+    '12_Deviation - Speed',
+    '13_Ground Excursion',
+    #'14_No Specific Anomaly Occurred'
+    )
+st.session_state['anomaly_tuple'] = anomaly_tuple
+
 
 st.markdown('# Welcome to the AeroBOT demo ✈')
 photo = get_img_with_href(os.path.join(streamlit_home_dir, 'ressources/airplanes2.jpeg'), 'https://commons.wikimedia.org/wiki/File:Lufthansa_Airbus_A380_and_Boeing_747_(16431502906).jpg', 380)

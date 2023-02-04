@@ -19,7 +19,7 @@ st.markdown("""
           ## Preparing narratives for Bag-of-words models
           """)
 
-st.header("🏝A weekend trip to the Bahamas") # 😎
+st.markdown("### 🏝 A weekend trip to the Bahamas") # 😎
 
 # Define colors and labels for expressions, contractions
 expr = {"color": "#26DBE0", # DST cyan
@@ -320,7 +320,7 @@ st.markdown("""
 
 st.write(" ")# placeholder
 
-st.markdown("""#### Narrative length
+st.markdown("""### Narrative length
 The figure below shows the impact of the preprocessing on the narrative length. We see that it is marginal.
 
 We count the number of tokens in each narrative, after tokenization and stemming. 

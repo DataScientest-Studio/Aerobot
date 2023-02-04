@@ -144,6 +144,48 @@ with tab2:
   To achieve this substitution as most efficiently as possible, we use regular expressions (Regex).
   """)
 
+st.markdown(""" #### Case style clustering
+Some narratives are entiretly written in uppercase letters and others contain some uppercase words. 
+This raises questions as to how process abbreviations appropriately: 
+in uppercase narratives, abbreviations in uppercase letters such as SO (second officer) and IF (intermediate fix) may be mistaken with the common words “so” and “if”. 
+
+In AeroBOT, we qualify the case style of each narrative by defining specific features: 
+in each sentence, we label the staring word and the following ones into one of the three following categories:
+- lower case
+- UPPERCASE 
+- Capital letters, e.g. acronyms such as 'IFR'
+
+Then, in each narrative, we count how many sentence starting words belong to each of the three categories listed above. 
+We do the the same for the following words in each sentece. 
+This gives us 6 features that describe the case style of a narrative.
+
+Applying a K-means clustering with the elbow method, we cluster the narratives into three clusters:
+- “lower case”: most of the starting word of sentences start with a capital letter. The following words are in lower case.
+- “upper case”: almost all words written exclusively in UPPER CASE.
+- "mix case”: about 80% of the starting words start with a capital letter, and 20% are fully UPPER CASE.
+""")
+st.image(get_image(img_name = 'case_clusters_with_examples.png'), 
+        caption='Top: overview of the three clusters that resulted from our analysis. Bottom: examples for each cluster. \
+        Notice in the "mix case" example that only one sentence starts with an upper case word (an acronym): "VNAV made all..."')
+
+st.markdown("""
+_What is the distribution of the narratives among this clusters?_
+
+The pie chart below shows that about 39% of the narratives are written in upper case.
+""")
+st.image(get_image(img_name = 'pie_chart.png'), 
+        caption='Distribution of the 3 case style clusters in the corpus.')        
+
+st.markdown("""
+_What is the distribution of the narratives among this clusters **over the years**?_
+""")
+st.image(get_image(img_name = 'cluster_distr.png'), 
+        caption='Distribution of the 3 case style clusters over the years.')
+
+st.markdown("""
+Until 2008, narratives were written in uppercase letters. The fully upper case style was not used at all after 2008. 
+""")
+
 with tab3:
   st.markdown("""### Target feature: Anomaly
   We show the distribution of ‘Anomaly’ labels in the training data. The imbalance in the distribution of the labels is striking: the most frequent label (‘Deviation / Discrepancy - Procedural’) has ~30x higher occurrence compared to the rarest one (‘Ground Excursion’).
