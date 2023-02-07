@@ -26,7 +26,22 @@ Beyond interpretability, we also use the token importance to perform supervised 
 
 # Plot the top 10 most important features for each Anomaly label
 # Define choices for the user 
-anomaly_tuple = st.session_state['anomaly_tuple'] # see main page
+anomaly_tuple = (
+    '01_Deviation / Discrepancy - Procedural',
+    '02_Aircraft Equipment',
+    '03_Conflict',
+    '04_Inflight Event / Encounter',
+    '05_ATC Issue',
+    '06_Deviation - Altitude',
+    '07_Deviation - Track / Heading',
+    '08_Ground Event / Encounter',
+    '09_Flight Deck / Cabin / Aircraft Event',
+    '10_Ground Incursion',
+    '11_Airspace Violation',
+    '12_Deviation - Speed',
+    '13_Ground Excursion',
+    #'14_No Specific Anomaly Occurred'
+    )
 
 anomalies_to_plot = st.multiselect(
     'Choose the anomaly label(s) of interest:',

@@ -54,7 +54,22 @@ with tab1:
     ##############################################
     # Define choices for the user 
     model_approaches = model_results_diffBLM_bestmodel['approach'].unique()
-    anomaly_tuple = st.session_state['anomaly_tuple'] # see main page
+    anomaly_tuple = (
+    '01_Deviation / Discrepancy - Procedural',
+    '02_Aircraft Equipment',
+    '03_Conflict',
+    '04_Inflight Event / Encounter',
+    '05_ATC Issue',
+    '06_Deviation - Altitude',
+    '07_Deviation - Track / Heading',
+    '08_Ground Event / Encounter',
+    '09_Flight Deck / Cabin / Aircraft Event',
+    '10_Ground Incursion',
+    '11_Airspace Violation',
+    '12_Deviation - Speed',
+    '13_Ground Excursion',
+    #'14_No Specific Anomaly Occurred'
+    )
 
     anomaly = 'Anomaly_' + st.selectbox(
         'Choose the anomaly label of interest from the drop-down list:', anomaly_tuple).split(sep = '_')[1]
