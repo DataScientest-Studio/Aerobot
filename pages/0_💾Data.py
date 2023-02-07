@@ -50,7 +50,7 @@ with tab1:
   """)
   st.image(get_image(img_name = 'Data_per_year.png'), 
           caption='Time evolution and geographic distribution of data, after reviewing by the ASRS.')
-
+#########################################################################################
 with tab2:
   st.markdown("""### Narratives
   #### Visual exploration
@@ -143,75 +143,67 @@ with tab2:
 
   To achieve this substitution as most efficiently as possible, we use regular expressions (Regex).
   """)
-
-st.markdown(""" #### Case style clustering
-Some narratives are entiretly written in uppercase letters and others contain some uppercase words. 
-This raises questions as to how process abbreviations appropriately: 
-in uppercase narratives, abbreviations in uppercase letters such as SO (second officer) and IF (intermediate fix) may be mistaken with the common words “so” and “if”. 
-
-In AeroBOT, we qualify the case style of each narrative by defining specific features: 
-in each sentence, we label the staring word and the following ones into one of the three following categories:
-- lower case
-- UPPERCASE 
-- Capital letters
-
-Then, in each narrative, we count how many sentence starting words belong to each of the three categories listed above. 
-We do the the same for the following words in each sentece. 
-This gives us 6 features that describe the case style of a narrative.
-
-Applying a K-means clustering with the elbow method, we cluster the narratives into three clusters:
-- “lower case”: most of the starting word of sentences start with a capital letter. The following words are in lower case.
-- “upper case”: almost all words written exclusively in UPPER CASE.
-- "mix case”: about 80% of the starting words start with a capital letter, and 20% are fully UPPER CASE.
-""")
-st.image(get_image(img_name = 'case_clusters_with_examples.png'), 
+  st.markdown(""" #### Case style clustering
+  Some narratives are entiretly written in uppercase letters and others contain some uppercase words. 
+  This raises questions as to how process abbreviations appropriately: 
+  in uppercase narratives, abbreviations in uppercase letters such as SO (second officer) and IF (intermediate fix) may be mistaken with the common words “so” and “if”. 
+  
+  In AeroBOT, we qualify the case style of each narrative by defining specific features: 
+  in each sentence, we label the staring word and the following ones into one of the three following categories:
+  - lower case
+  - UPPERCASE 
+  - Capital letters
+  
+  Then, in each narrative, we count how many sentence starting words belong to each of the three categories listed above. 
+  We do the the same for the following words in each sentece. 
+  This gives us 6 features that describe the case style of a narrative.
+  
+  Applying a K-means clustering with the elbow method, we cluster the narratives into three clusters:
+  - “lower case”: most of the starting word of sentences start with a capital letter. The following words are in lower case.
+  - “upper case”: almost all words written exclusively in UPPER CASE.
+  - "mix case”: about 80% of the starting words start with a capital letter, and 20% are fully UPPER CASE.
+  """)
+  
+  st.image(get_image(img_name = 'case_clusters_with_examples.png'), 
         caption='Top: overview of the three clusters that resulted from our analysis. Bottom: examples for each cluster. \
         Notice in the "mix case" example that only one sentence starts with an upper case word (an acronym): "VNAV made all..." \
         and that there are several acronyms written in upper case.')
 
-st.markdown("""
-_What is the distribution of the narratives among this clusters?_
-
-The pie chart below shows that about 39% of the narratives are written in upper case.
-""")
-st.image(get_image(img_name = 'pie_chart.png'), 
+  st.markdown("""_What is the distribution of the narratives among this clusters?_
+        The pie chart below shows that about 39% of the narratives are written in upper case.
+        """)
+  st.image(get_image(img_name = 'pie_chart.png'), 
         caption='Distribution of the 3 case style clusters in the corpus.')        
 
-st.markdown("""
-_What is the distribution of the narratives among this clusters **over the years**?_
-""")
-st.image(get_image(img_name = 'cluster_distr.png'), 
+  st.markdown("""_What is the distribution of the narratives among this clusters **over the years**?_
+        """)
+  st.image(get_image(img_name = 'cluster_distr.png'), 
         caption='Distribution of the 3 case style clusters over the years.')
 
-st.markdown("""
-Until 2008, narratives were written in uppercase letters. The fully upper case style was not used at all after 2008. 
-""")
+  st.markdown("""Until 2008, narratives were written in uppercase letters. The fully upper case style was not used at all after 2008. 
+        """)
 
-st.markdown(""" #### Usage of abbreviations (TLP)
-In this section, we explain our motivation for replacing abbreviations in our TLP Preprocessing.
+  st.markdown(""" #### Usage of abbreviations (TLP)
+  In this section, we explain our motivation for replacing abbreviations in our TLP Preprocessing.
+  Dealing with the technical language was one of the key aspects of our project. In our case, approximately 460 abbreviations are listed in the ASRS abbreviation list, such as:
+  - HQ (headquarters), AM/PM , ASAP, NASA, etc. which are known in the usual language,
+  - but also aeronautical terms, e.g. ATC (Air Traffic Control), AFDS (Autopilot and Flight Director System), AFSS (Automated Flight Service Station).
+  
+  For instance,  “Aircraft” is referred to as ‘aircraft’ in 43,000 narratives and as ‘ACFT’ in 26,000 other narratives.
+  In a Bag of Words approach, our aim is to correctly count technical words and expressions, avoiding duplicates.
+  
+  The following figures show the usage of abbreviations in the two following cases:
+  
+  - Contraction of words: They represent one third of the abbreviation count (~160).  Example: ‘ACFT’ for ‘aircraft’. The document frequencies of abbreviated form vs. full-text form show a rather mixed use of both forms
+  - Expressions’ acronyms : They represent two thirds of the abbreviation count (~300). Example: ‘ATC’  for  ‘air traffic control’. The document frequencies of abbreviated form vs. full-text form show that one form is more dominant: 'asap' and 'Flight attendant' dominate over their respective counter parts 'as soon as possible' and 'FA'. Exceptions to this are e.g. FO/First officer, PF/Pilot flying; here we find both with approximately equal occurence.
+  """)
 
-Dealing with the technical language was one of the key aspects of our project. In our case, approximately 460 abbreviations are listed in the ASRS abbreviation list, such as:
-- HQ (headquarters), AM/PM , ASAP, NASA, etc. which are known in the usual language,
-- but also aeronautical terms, e.g. ATC (Air Traffic Control), AFDS (Autopilot and Flight Director System), AFSS (Automated Flight Service Station).
-
-For instance,  “Aircraft” is referred to as ‘aircraft’ in 43,000 narratives and as ‘ACFT’ in 26,000 other narratives. 
-In a Bag of Words approach, our aim is to correctly count technical words and expressions, avoiding duplicates.
-
-The following figures show the usage of abbreviations in the two following cases:
-
-- Contraction of words: They represent one third of the abbreviation count (~160).  Example: ‘ACFT’ for ‘aircraft’. The document frequencies of abbreviated form vs. full-text form show a rather mixed use of both forms
-
-- Expressions’ acronyms : They represent two thirds of the abbreviation count (~300). Example: ‘ATC’  for  ‘air traffic control’. The document frequencies of abbreviated form vs. full-text form show that one form is more dominant: 'asap' and 'Flight attendant' dominate over their respective counter parts 'as soon as possible' and 'FA'. Exceptions to this are e.g. FO/First officer, PF/Pilot flying; here we find both with approximately equal occurence.
-""")
-
-st.image(get_image(img_name = 'use_of_contractions.png'), 
+  st.image(get_image(img_name = 'use_of_contractions.png'), 
         caption='Usage of contractions in the narratives.')
 
-st.image(get_image(img_name = 'use_of_acronyms.png'), 
+  st.image(get_image(img_name = 'use_of_acronyms.png'), 
         caption='Usage of expressions’ acronyms in the narratives.')
-
-
-
+###########################################################################
 
 with tab3:
   st.markdown("""### Target feature: Anomaly
